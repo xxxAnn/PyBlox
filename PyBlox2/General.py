@@ -1,5 +1,7 @@
 import json
-import RobloxApi.RobloxApiError as ErrorModule
+
+# Local
+from .RobloxApiError import *
 
 
 

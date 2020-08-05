@@ -1,40 +1,67 @@
 import json
-import RobloxApi.RobloxApiError as ErrorModule
-import RobloxApi.General as Utilities
 import time
+
+# Local
+from .RobloxApiError import *
+from .General import BloxUser
+
 
 
 GROUPS_ENDPOINT = "groups.roblox.com"
+
 
 def handle_error(func):
     def wrapper(*args, **kwargs):
         result = func()
         if result.status != 200:
-            raise ErrorModule.RobloxApiError(
+            raise RobloxApiError(
                 response.status,
                 response.read().decode("utf-8")
             )
     
     return wrapper
 
-class BloxMember(Utilities.BloxUser):
+class BloxMember(BloxUser):
     '''
     A slightly modified BloxUser object
     '''
-    def __init__(self, client, user_id: str, username: str, group_id: str):
+    def __init__(self, client, user_id: str, username: str, group):
         super().__init__(client=client, user_id=user_id, username=username)
-        self.group_id = str(group_id)
+        self.group = group
 
-    def set_rank(self, rank_id):
+    def get_role(self, name: str):
+        hook = self.client.httpRequest(
+            "GET",
+            GROUPS_ENDPOINT,
+            "/v1/groups/" + str(self.group.id) + "/roles"
+            )
+        
+        if hook.status != 200:
+            raise RobloxApiError(
+                hook.status,
+                hook.read().decode("utf-8")
+            )
+        data = json.loads(hook.read().decode("utf-8"))
+        roles = data.get("roles")
+
+        for dicto in roles:
+            if dicto.get("name") == name:
+                return dicto.get("id")
+
+        return None
+
+    def set_rank(self, role_name: str):
         '''
         Changes the user's role in the group
         '''
-        group_id = str(self.group_id)
+        group_id = str(self.group.id)
+        role_id = str(self.get_role(role_name))
+
         hook = self.client.httpRequest(
             "PATCH",
             GROUPS_ENDPOINT,
-            "/v1/groups/" + str(group_id) + "/users/" + str(self.user_id),
-            "{\"roleId\":" + rank_id + "}",
+            "/v1/groups/" + str(group_id) + "/users/" + str(self.id),
+            "{\"roleId\":" + role_id + "}",
             "application/json"
         )
 
@@ -43,6 +70,7 @@ class BloxMember(Utilities.BloxUser):
                 hook.status,
                 hook.read().decode("utf-8")
             )
+        return "Success"
 
 
 class BloxGroup:
@@ -60,12 +88,33 @@ class BloxGroup:
             )
         
         if hook.status != 200:
-            raise ErrorModule.RobloxApiError(
+            raise RobloxApiError(
                 hook.status,
                 hook.read().decode("utf-8")
             )
         name = json.loads(hook.read().decode("utf-8")).get("name")
         return name
+
+    def get_role(self, name: str):
+        hook = self.client.httpRequest(
+            "GET",
+            GROUPS_ENDPOINT,
+            "/v1/groups/" + self.id + "roles"
+            )
+        
+        if hook.status != 200:
+            raise RobloxApiError(
+                hook.status,
+                hook.read().decode("utf-8")
+            )
+        data = json.loads(hook.read().decode("utf-8"))
+        roles = data.get("roles")
+
+        for dicto in roles:
+            if dicto.get("name") == name:
+                return dicto.get("id")
+
+        return None
 
     def _get_role_id_from_rank(self, rank: int):
         role_id = None
@@ -93,7 +142,7 @@ class BloxGroup:
 
     def get_member(self, username: str):
         user = self.client.get_user(username)
-        return BloxMember(client=self.client, user_id=user.id, username=username, group_id=self.id)
+        return BloxMember(client=self.client, user_id=user.id, username=username, group=self)
 
     def members(self, limit=0):
         '''
@@ -114,7 +163,7 @@ class BloxGroup:
             )
 
         if hook.status != 200:
-            raise ErrorModule.RobloxApiError(
+            raise RobloxApiError(
                 hook.status,
                 hook.read().decode("utf-8")
             )
@@ -125,7 +174,7 @@ class BloxGroup:
 
             for user_info_dict in list:
                 user_dict = user_info_dict.get("user")
-                result_list.append(BloxMember(client=self.client, user_id=str(user_dict.get("id")), username=user_dict.get("username"), group_id=self.id))
+                result_list.append(BloxMember(client=self.client, user_id=str(user_dict.get("id")), username=user_dict.get("username"), group=group))
 
             return result_list
 

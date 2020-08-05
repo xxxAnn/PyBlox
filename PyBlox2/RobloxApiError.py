@@ -1,6 +1,8 @@
 
 class RobloxApiError(BaseException):
-    
+    '''
+    Sends Roblox's error message as a Python BaseException
+    '''
     def __init__(self, http_status, api_error_message):
         super(RobloxApiError, self).__init__(api_error_message)
         self.__status = http_status

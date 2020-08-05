@@ -3,8 +3,10 @@ import re
 import json
 import enum
 import asyncio
-import RobloxApi.General as Utilities
-import RobloxApi.Groups as GroupModule
+
+# Local
+from .General import BloxUser
+from .Groups import BloxGroup
 
 FFDoPrint = True
 FFPrintHttp = True
@@ -157,7 +159,7 @@ class BloxClient():
             )
 
         id = json.loads(response.read().decode("utf-8"))["Id"]
-        return Utilities.BloxUser(client=self, user_id=id, username=username)
+        return BloxUser(client=self, user_id=id, username=username)
 
     def get_group(self, group_id: str):
         hook = self.httpRequest(
@@ -175,7 +177,7 @@ class BloxClient():
             )
 
         roles = json.loads(hook.read().decode("utf-8"))["roles"]
-        return GroupModule.BloxGroup(client=self, group_id=group_id, roles=roles)
+        return BloxGroup(client=self, group_id=group_id, roles=roles)
 
     def getAccountSettings(self):
         return self.__clientSettings
