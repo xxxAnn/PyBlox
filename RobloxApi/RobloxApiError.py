@@ -1,0 +1,20 @@
+
+class RobloxApiError(BaseException):
+    
+    def __init__(self, http_status, api_error_message):
+        super(RobloxApiError, self).__init__(api_error_message)
+        self.__status = http_status
+        self.__msg = api_error_message
+    
+
+    def getAPIErrorMessage(self):
+        return self.__msg
+
+    def getAPIHttpStatus(self):
+        return self.__status
+
+class PyBloxException(BaseException):
+
+    def __init__(self, error_message):
+        super(PyBloxException, self).__init__(apiErrorMessage)
+        self.__msg = apiErrorMessage
