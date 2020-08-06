@@ -5,7 +5,7 @@ from PyBlox2.RobloxWebClient import BloxClient
 RobloxClient = BloxClient(verbose=True)
 
 
-async def main():
+def main():
     group = RobloxClient.get_group(3891491)
     fans = group.get_role("Fan")
     print(fans.members)

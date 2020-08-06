@@ -79,7 +79,7 @@ class BloxClient():
 
         if FFDoPrint:
             print("> RobloxWebClient Connection Established <")
-            asyncio.run(callback())
+            callback()
 
     def __validateLogin(self, headers) -> bool:
 
