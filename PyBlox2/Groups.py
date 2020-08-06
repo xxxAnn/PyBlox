@@ -45,7 +45,7 @@ class BloxGroup:
             )
         name = json.loads(hook.read().decode("utf-8")).get("name")
         return name
-    
+
     def cvrt_dict_blox_member(self, list):
         real_list = []
         for user_dict in list:
@@ -54,7 +54,7 @@ class BloxGroup:
         return real_list
 
     def __getattr__(self, name):
-        if name == "join-requests":
+        if name == "join_requests":
             join_requests = self.__get_join_requests()
             return join_requests
 

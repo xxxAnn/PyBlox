@@ -1,0 +1,12 @@
+site_name: PyBlox2 Documentation
+nav:
+    - Home: 'index.md'
+    - Blox:
+        - BloxClient: 'bloxclient.md'
+        - BloxUser: 'bloxuser.md'
+        - BloxMember: 'bloxmember.md'
+        - BloxGroup: 'bloxgroup.md'
+        - BloxRank: 'bloxranks.md'
+        - BloxSettings: 'bloxsettings.md'
+
+theme: readthedocs
