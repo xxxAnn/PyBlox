@@ -7,6 +7,8 @@ import asyncio
 # Local
 from .General import BloxUser
 from .Groups import BloxGroup
+from .RobloxApiError import RobloxApiError
+
 
 FFDoPrint = True
 FFPrintHttp = True
@@ -77,7 +79,7 @@ class BloxClient():
 
         if FFDoPrint:
             print("> RobloxWebClient Connection Established <")
-            callback()
+            asyncio.run(callback())
 
     def __validateLogin(self, headers) -> bool:
 
@@ -99,7 +101,59 @@ class BloxClient():
             return False
 
 
+    def friend_requests(self, limit=0):
+        actual_limit = limit
+        if limit == 0:
+            actual_limit = 100
 
+        list_members = []
+
+        uri = "/v1/my/friends/requests?sortOrder=Asc&limit={0}".format(actual_limit)
+        hook = self.httpRequest(
+            "GET",
+            "friends.roblox.com",
+            uri
+            )
+        if hook.status != 200:
+            raise RobloxApiError(
+                hook.status,
+                hook.read().decode("utf-8")
+            )
+
+        def create_user(list):
+
+            result_list = []
+
+            for user_dict in list:
+                result_list.append(BloxUser(client=self, user_id=str(user_dict.get("id")), username=user_dict.get("username")))
+
+            return result_list
+
+        data = json.loads(hook.read().decode("utf-8"))
+        list_members.extend(create_user(data.get("data")))
+
+        done = False
+
+        next_page = data.get("nextPageCursor")
+        
+        if limit == 0:
+            while not done:
+
+                if not isinstance(next_page, str):
+                    done = True
+                    continue
+
+                hook = self.httpRequest(
+                "GET",
+                "friends.roblox.com",
+                uri + "&cursor=" + str(next_page)
+                )
+                data = json.loads(hook.read().decode("utf-8"))
+                next_page = data.get("nextPageCursor")
+                list_members.extend(create_user(data.get("data")))
+
+
+        return list_members
 
     def __setHeader(self, key, value):
         self.__headers[key] = value
