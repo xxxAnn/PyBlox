@@ -7,7 +7,7 @@ import asyncio
 # Local
 from .General import BloxUser
 from .Groups import BloxGroup
-from .RobloxApiError import RobloxApiError
+from .Errors import RobloxApiError
 
 
 FFDoPrint = True

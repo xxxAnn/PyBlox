@@ -1,4 +1,5 @@
 import json
+from .Errors import PyBloxException
 
 
 class BloxRank:
@@ -10,11 +11,8 @@ class BloxRank:
         self.description = payload.pop("description")
         self.guild = guild
 
-    def __getattr__(self, name):
-        if name == "members":
-            return self.__members()
-
-    def __members(self):
+    @property
+    def members(self):
         role_id = self.id
         hook = self.guild.client.httpRequest(
             "GET",
@@ -24,4 +22,11 @@ class BloxRank:
         members_list = []
         iterable = json.loads(hook.read().decode("utf-8"))["data"]
 
-        return self.guild.cvrt_dict_blox_member(iterable)
+        result = self.guild._cvrt_dict_blox_member(iterable)
+
+        if result == None:
+            raise PyBloxException(
+                "Could not find members"
+                )
+
+        return result

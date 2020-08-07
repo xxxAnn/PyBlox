@@ -18,5 +18,5 @@ class RobloxApiError(BaseException):
 class PyBloxException(BaseException):
 
     def __init__(self, error_message):
-        super(PyBloxException, self).__init__(apiErrorMessage)
-        self.__msg = apiErrorMessage
+        super(PyBloxException, self).__init__(error_message)
+        self.__msg = error_message

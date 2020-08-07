@@ -2,7 +2,8 @@ import json
 import time
 
 # Local
-from .RobloxApiError import *
+from .Errors import *
+from .Base import BloxType
 from .General import BloxUser
 from .Ranks import BloxRank
 from .Settings import BloxSettings
@@ -24,14 +25,18 @@ def handle_error(func):
     return wrapper
 
 
-class BloxGroup:
+class BloxGroup(BloxType):
 
     def __init__(self, client, group_id, roles):
-        self.client = client
+        super().__init__(client)
         self.id = str(group_id)
         self.roles = roles
-    
+
     def __str__(self):
+        return self.name
+    
+    @property
+    def name(self):
         hook = self.client.httpRequest(
             "GET",
             GROUPS_ENDPOINT,
@@ -43,24 +48,20 @@ class BloxGroup:
                 hook.status,
                 hook.read().decode("utf-8")
             )
-        name = json.loads(hook.read().decode("utf-8")).get("name")
+        name = json.loads(hook.read().decode("utf-8")).get("name", None)
+        
+        if name == None:
+            raise PyBloxException(
+                "Group name is invalid"
+                )
         return name
 
-    def cvrt_dict_blox_member(self, list):
+    def _cvrt_dict_blox_member(self, list):
         real_list = []
         for user_dict in list:
-            real_list.append(BloxMember(client=self.client, user_id=user_dict.get("userId"), username=user_dict.get("username"), group=self))
+            real_list.append(BloxMember(client=self.client, user_id=str(user_dict.get("userId")), username=user_dict.get("username"), group=self))
 
         return real_list
-
-    def __getattr__(self, name):
-        if name == "join_requests":
-            join_requests = self.__get_join_requests()
-            return join_requests
-
-        if name == "settings":
-            settings = self.__get_settings()
-            return settings
 
     def get_role(self, name: str):
         hook = self.client.httpRequest(
@@ -87,25 +88,24 @@ class BloxGroup:
             if role.get("rank") == rank:
                 role_id = str(role.get("id"))
         if not role_id:
-            return "Rank not found"
-        else:
-            return role_id
+            raise PyBloxException(
+                "Role not found"
+                )
+
+        return role_id
 
     def get_member(self, username: str):
         user = self.client.get_user(username)
         return BloxMember(client=self.client, user_id=user.id, username=username, group=self)
 
-    def members(self, limit=0):
+    @property
+    def members(self):
         '''
         Returns a list of all the group's members
         '''
-        actual_limit = limit
-        if limit == 0:
-            actual_limit = 100
-
         list_members = []
 
-        uri = "/v1/groups/{0}/users?sortOrder=Asc&limit={1}".format(self.id, actual_limit)
+        uri = "/v1/groups/{0}/users?sortOrder=Asc&limit={1}".format(self.id, 100)
 
         hook = self.client.httpRequest(
             "GET",
@@ -125,7 +125,7 @@ class BloxGroup:
 
             for user_info_dict in list:
                 user_dict = user_info_dict.get("user")
-                result_list.append(BloxMember(client=self.client, user_id=str(user_dict.get("id")), username=user_dict.get("username"), group=group))
+                result_list.append(BloxMember(client=self.client, user_id=str(user_dict.get("userId")), username=user_dict.get("username"), group=group))
 
             return result_list
 
@@ -136,29 +136,33 @@ class BloxGroup:
 
         next_page = data.get("nextPageCursor")
         
-        if limit == 0:
-            while not done:
+        while not done:
 
-                if not isinstance(next_page, str):
-                    done = True
-                    continue
+            if not isinstance(next_page, str):
+                done = True
+                continue
 
-                hook = self.client.httpRequest(
-                "GET",
-                GROUPS_ENDPOINT,
-                uri + "&cursor=" + str(next_page)
-                )
-                data = json.loads(hook.read().decode("utf-8"))
-                next_page = data.get("nextPageCursor")
-                list_members.extend(create_members(self, data.get("data")))
-
-
+            hook = self.client.httpRequest(
+            "GET",
+            GROUPS_ENDPOINT,
+            uri + "&cursor=" + str(next_page)
+            )
+            data = json.loads(hook.read().decode("utf-8"))
+            next_page = data.get("nextPageCursor")
+            list_members.extend(create_members(self, data.get("data")))
+    
         return list_members
 
-    def __get_join_requests(self):
+    @property
+    def join_requests(self):
         '''
-        Returns a list of all the group's join-request
+        Returns a list of users that request to join the group
         '''
+        if not self.settings.is_approval_required:
+            raise PyBloxException(
+                "This group isn't approval required and has no join requests"
+                )
+
         list_members = []
 
         uri = "/v1/groups/{0}/users?sortOrder=Asc&limit={1}".format(self.id, 100)
@@ -211,7 +215,8 @@ class BloxGroup:
 
         return list_members
 
-    def __get_settings(self):
+    @property
+    def settings(self):
         '''
         Get the group's settings and return them as BloxSettings object
         '''

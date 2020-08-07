@@ -1,14 +1,18 @@
 from secret import ROBLOSECURITY # Have your ROBLOSECURITY there
-from PyBlox2.RobloxWebClient import BloxClient
+import PyBlox2
+import time
 
 
-RobloxClient = BloxClient(verbose=True)
+client = PyBlox2.BloxClient(verbose=False)
 
 
 def main():
-    group = RobloxClient.get_group(3891491)
-    fans = group.get_role("Fan")
-    print(fans.members)
+    group = client.get_group(5029105)
+    try:
+        print(group.join_requests)
+    except PyBlox2.PyBloxException:
+        print(group)
 
 
-RobloxClient.connect(ROBLOSECURITY, callback=main)
+client.connect(ROBLOSECURITY, callback=main)
+

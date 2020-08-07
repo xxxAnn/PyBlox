@@ -1,5 +1,5 @@
 from .General import BloxUser
-from .RobloxApiError import RobloxApiError
+from .Errors import RobloxApiError
 from .Ranks import BloxRank
 
 
@@ -17,10 +17,8 @@ class BloxMember(BloxUser):
     def set_role(self, role: BloxRank) -> str:
         '''
         Changes the user's role in the group
-        Will not return an error
         '''
         group_id = str(self.group.id)
-        role_id = str(role.id)
 
         hook = self.client.httpRequest(
             "PATCH",
@@ -35,11 +33,10 @@ class BloxMember(BloxUser):
                 hook.status,
                 hook.read().decode("utf-8")
             )
-        return "Success"
     
     def kick(self):
         '''
-        May return an error
+        kicks the user from the group
         '''
         hook = self.client.httpRequest(
             "DELETE",
@@ -47,4 +44,8 @@ class BloxMember(BloxUser):
             "/v1/groups/" + str(self.group.id) + "/users/" + str(self.id)
         )
 
-        return hook
+        if hook.status != 200:
+            raise PyBlox2.RobloxApi.RobloxApiError.RobloxApiError(
+                hook.status,
+                hook.read().decode("utf-8")
+            )

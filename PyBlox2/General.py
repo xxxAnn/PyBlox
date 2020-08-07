@@ -1,7 +1,8 @@
 import json
 
 # Local
-from .RobloxApiError import *
+from .Errors import *
+from .Base import BloxType
 
 
 def handle_response(response):
@@ -13,14 +14,30 @@ def handle_response(response):
     return
 
 
-class BloxUser:
+def catch_error(function):
+
+    def wrapper(*args, **kwargs):
+        response = function(*args, **kwargs)
+        if response.status != 200:
+            raise RobloxApiError(
+                response.status,
+                response.read().decode("utf-8")
+            )
+
+    return wrapper
+
+
+class BloxUser(BloxType):
     '''
-    This shouldn't ever be manually constructed, rather BloxClient.get_user should be used.
-    Implements all the methods the Roblox API allows us to
+    A handler for a roblox user
     '''
     def __init__(self, client, user_id, username):
+        super().__init__(client)
+        if not isinstance(user_id, str):
+            raise TypeError(
+                "user_id must be a str"
+                )
         self.id = str(user_id)
-        self.client = client
         self.username = username
 
     def __repr__(self):
@@ -31,14 +48,10 @@ class BloxUser:
 
         return json.dumps(dicto)
 
-    def __getattr__(self, item):
-        if item == "friends":
-            friends = self.__get_friends()
-            return friends
-
     def __str__(self):
         return self.username
-
+    
+    @catch_error
     def accept_friend_request(self):
         hook = self.client.httpRequest(
             "POST",
@@ -46,6 +59,9 @@ class BloxUser:
             "/user/accept-friend-request?requesterUserId=" + self.id
         )
 
+        return hook
+
+    @catch_error
     def decline_friend_request(self):
         hook = self.client.httpRequest(
             "POST",
@@ -53,6 +69,9 @@ class BloxUser:
             "/user/decline-friend-request?requesterUserId=" + self.id
         )
 
+        return hook
+
+    @catch_error
     def request_friendship(self):
         hook = self.client.httpRequest(
             "POST",
@@ -60,6 +79,9 @@ class BloxUser:
             "/user/request-friendship?recipientUserId=" + self.id
         )
 
+        return hook
+
+    @catch_error
     def unfriend(self):
         hook = self.client.httpRequest(
             "POST",
@@ -67,6 +89,9 @@ class BloxUser:
             "/user/unfriend?friendUserId=" + self.id
         )
 
+        return hook
+
+    @catch_error
     def follow(self):
         hook = self.client.httpRequest(
             "POST",
@@ -74,6 +99,9 @@ class BloxUser:
             "/user/follow?followedUserId=" + self.id
         )
 
+        return hook
+
+    @catch_error
     def unfollow(self):
         hook = self.client.httpRequest(
             "POST",
@@ -81,27 +109,34 @@ class BloxUser:
             "/user/unfollow?followedUserId=" + self.id
         )
 
+        return hook
+    
+    @catch_error
     def block(self):
         hook = self.client.httpRequest(
             "POST",
             "api.roblox.com",
             "/userblock/block?userId=" + self.id
         )
+    
+        return hook
 
+    @catch_error
     def unblock(self):
         hook = self.client.httpRequest(
             "POST",
             "api.roblox.com",
             "/userblock/unblock?userId=" + self.id
         )
+
+        return hook
     
-    def __get_friends(self):
+    @property
+    def friends(self):
         '''
         Should only be used locally
         '''
-        if use_cache:
-            return self.cached_friends
-        hook = self.cliewnt.httpRequest(
+        hook = self.client.httpRequest(
             "GET",
             "friends.roblox.com",
             "/v1/users/" + self.id + "/friends"
@@ -115,6 +150,9 @@ class BloxUser:
         friend_list = []
         for user_dict in data.get("data"):
             friend_list.append(BloxUser(client=self.client, user_id=str(user_dict.get("id")), username=user_dict.get("name")))
-        self.cached_friends = friend_list
         
+        if len(friend_list) == 0:
+            raise PyBloxException(
+                "User has no friends"
+                )
         return friend_list
