@@ -19,4 +19,11 @@ class PyBloxException(BaseException):
 
     def __init__(self, error_message):
         super(PyBloxException, self).__init__(error_message)
-        self.__msg = error_message
+        self._msg = error_message
+
+
+class AttributeNotFetched(PyBloxException):
+    
+    def __init__(self, attribute):
+        error_message = "Attribute '{}' was accessed before being fetched".format(attribute)
+        super().__init__(error_message)

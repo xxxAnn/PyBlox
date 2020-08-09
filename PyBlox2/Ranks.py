@@ -1,5 +1,5 @@
 import json
-from .Errors import PyBloxException
+from .Errors import *
 
 
 class BloxRank:
@@ -11,8 +11,7 @@ class BloxRank:
         self.description = payload.pop("description")
         self.guild = guild
 
-    @property
-    def members(self):
+    async def fetch_members(self):
         role_id = self.id
         hook = self.guild.client.httpRequest(
             "GET",
@@ -22,11 +21,21 @@ class BloxRank:
         members_list = []
         iterable = json.loads(hook.read().decode("utf-8"))["data"]
 
-        result = self.guild._cvrt_dict_blox_member(iterable)
+        result = await self.guild._cvrt_dict_blox_member(self, iterable)
 
         if result == None:
             raise PyBloxException(
                 "Could not find members"
                 )
-
+        
+        self._members = result
         return result
+    
+    @property
+    def members(self):
+        if hasattr(self, '_members'):
+            return self._members
+        else:
+            raise AttributeNotFetched(
+                    "members"
+                )
