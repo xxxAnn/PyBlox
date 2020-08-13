@@ -65,7 +65,7 @@ class BloxGroup(BloxType):
         return real_list
 
     async def get_role(self, name: str):
-        hook = self.client.http_request(
+        hook = await self.client.http_request(
             "GET",
             GROUPS_ENDPOINT,
             "/v1/groups/" + str(self.id) + "/roles"
@@ -83,8 +83,8 @@ class BloxGroup(BloxType):
             if dicto.get("name") == name:
                 return BloxRank(payload=dicto, guild=self)
 
-    def get_member(self, username: str):
-        user = self.client.get_user(username)
+    async def get_member(self, username: str):
+        user = await self.client.get_user(username)
         return BloxMember(client=self.client, user_id=user.id, username=username, group=self)
 
     async def fetch_members(self):
@@ -221,12 +221,12 @@ class BloxGroup(BloxType):
             raise AttributeNotFetched(
                     "join_requests"
                 )
-    @property
-    def settings(self):
+
+    async def get_settings(self):
         '''
         Get the group's settings and return them as BloxSettings object
         '''
-        hook = self.client.http_request(
+        hook = await self.client.http_request(
             "GET",
             GROUPS_ENDPOINT,
             "/v1/groups/" + str(self.id) + "/settings"

@@ -53,7 +53,7 @@ class BloxUser(BloxType):
     
     @catch_error
     async def accept_friend_request(self):
-        hook = self.client.http_request(
+        hook = await self.client.http_request(
             "POST",
             "api.roblox.com",
             "/user/accept-friend-request?requesterUserId=" + self.id
@@ -63,7 +63,7 @@ class BloxUser(BloxType):
 
     @catch_error
     async def decline_friend_request(self):
-        hook = self.client.http_request(
+        hook = await self.client.http_request(
             "POST",
             "api.roblox.com",
             "/user/decline-friend-request?requesterUserId=" + self.id
@@ -73,7 +73,7 @@ class BloxUser(BloxType):
 
     @catch_error
     async def request_friendship(self):
-        hook = self.client.http_request(
+        hook = await self.client.http_request(
             "POST",
             "api.roblox.com",
             "/user/request-friendship?recipientUserId=" + self.id
@@ -83,7 +83,7 @@ class BloxUser(BloxType):
 
     @catch_error
     async def unfriend(self):
-        hook = self.client.http_request(
+        hook = await self.client.http_request(
             "POST",
             "api.roblox.com",
             "/user/unfriend?friendUserId=" + self.id
@@ -93,7 +93,7 @@ class BloxUser(BloxType):
 
     @catch_error
     async def follow(self):
-        hook = self.client.http_request(
+        hook = await self.client.http_request(
             "POST",
             "api.roblox.com",
             "/user/follow?followedUserId=" + self.id
@@ -102,8 +102,8 @@ class BloxUser(BloxType):
         return hook
 
     @catch_error
-    def unfollow(self):
-        hook = self.client.http_request(
+    async def unfollow(self):
+        hook = await self.client.http_request(
             "POST",
             "api.roblox.com",
             "/user/unfollow?followedUserId=" + self.id
@@ -113,7 +113,7 @@ class BloxUser(BloxType):
     
     @catch_error
     async def block(self):
-        hook = self.client.http_request(
+        hook = await self.client.http_request(
             "POST",
             "api.roblox.com",
             "/userblock/block?userId=" + self.id
@@ -123,7 +123,7 @@ class BloxUser(BloxType):
 
     @catch_error
     async def unblock(self):
-        hook = self.client.http_request(
+        hook = await self.client.http_request(
             "POST",
             "api.roblox.com",
             "/userblock/unblock?userId=" + self.id
@@ -132,7 +132,7 @@ class BloxUser(BloxType):
         return hook
     
     async def fetch_friends(self):
-        hook = self.client.http_request(
+        hook = await self.client.http_request(
             "GET",
             "friends.roblox.com",
             "/v1/users/" + self.id + "/friends"

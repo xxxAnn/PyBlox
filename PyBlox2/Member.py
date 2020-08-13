@@ -12,6 +12,8 @@ class BloxMember(BloxUser):
 
     Is a descendant of PyBlox2.BloxUser
 
+    ---------------
+
     Unique methods:
         coroutine set_role(role) -> role must be a PyBlox2.BloxRank
         coroutine kick()
@@ -20,6 +22,7 @@ class BloxMember(BloxUser):
 
     Unique attributes:
         group -> a PyBlox2.BloxGroup
+
     '''
     def __init__(self, client, user_id: str, username: str, group):
         super().__init__(client=client, user_id=user_id, username=username)

@@ -260,7 +260,7 @@ class BloxClient():
         )
         if hook.status != 200:
             raise PyBlox.RobloxApi.RobloxApiError.RobloxApiError(
-                response.status,
+                hook.status,
                 hook.text
             )
         roles = json.loads(hook.text)["roles"]
