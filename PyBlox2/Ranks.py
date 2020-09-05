@@ -1,9 +1,12 @@
 import json
 from .Errors import *
+from .Base import BloxType
+from .utils.Endpoints import *
 
 
-class BloxRank:
+class BloxRank(BloxType):
     def __init__(self, payload, guild):
+        super().__init__()
         self.name = payload.pop("name")
         self.id = payload.pop("id")
         self.rank = payload.pop("rank")
@@ -15,7 +18,7 @@ class BloxRank:
         role_id = self.id
         hook = self.guild.client.httpRequest(
             "GET",
-            "groups.roblox.com",
+            GROUPS_ENDPOINT,
             "/v1/groups/" + str(self.guild.id) + "/roles/"+ str(self.id) +"/users"
         )
         members_list = []
@@ -30,12 +33,3 @@ class BloxRank:
         
         self._members = result
         return result
-    
-    @property
-    def members(self):
-        if hasattr(self, '_members'):
-            return self._members
-        else:
-            raise AttributeNotFetched(
-                    "members"
-                )

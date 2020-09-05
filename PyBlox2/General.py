@@ -3,7 +3,7 @@ import json
 # Local
 from .Errors import *
 from .Base import BloxType
-
+from .utils.Endpoints import *
 
 def handle_response(response):
     if response.status != 200:
@@ -12,20 +12,6 @@ def handle_response(response):
                 response.text
             )
     return
-
-
-def catch_error(function):
-
-    async def wrapper(*args, **kwargs):
-        response = await function(*args, **kwargs)
-        if response.status != 200:
-            raise RobloxApiError(
-                response.status,
-                response.text
-            )
-
-    return wrapper
-
 
 class BloxUser(BloxType):
     '''
@@ -39,14 +25,15 @@ class BloxUser(BloxType):
                 )
         self.id = str(user_id)
         self.username = username
+        self.can_fetch("friends")
 
     def __repr__(self):
-        dicto = {
+        _dict = {
             "username": self.username,
             "user_id": self.id
             }
 
-        return json.dumps(dicto)
+        return json.dumps(_dict)
 
     def __str__(self):
         return self.username
@@ -55,7 +42,7 @@ class BloxUser(BloxType):
     async def accept_friend_request(self):
         hook = await self.client.http_request(
             "POST",
-            "api.roblox.com",
+            DEFAULT_ENDPOINT,
             "/user/accept-friend-request?requesterUserId=" + self.id
         )
 
@@ -65,7 +52,7 @@ class BloxUser(BloxType):
     async def decline_friend_request(self):
         hook = await self.client.http_request(
             "POST",
-            "api.roblox.com",
+            DEFAULT_ENDPOINT,
             "/user/decline-friend-request?requesterUserId=" + self.id
         )
 
@@ -75,7 +62,7 @@ class BloxUser(BloxType):
     async def request_friendship(self):
         hook = await self.client.http_request(
             "POST",
-            "api.roblox.com",
+            DEFAULT_ENDPOINT,
             "/user/request-friendship?recipientUserId=" + self.id
         )
 
@@ -85,7 +72,7 @@ class BloxUser(BloxType):
     async def unfriend(self):
         hook = await self.client.http_request(
             "POST",
-            "api.roblox.com",
+            DEFAULT_ENDPOINT,
             "/user/unfriend?friendUserId=" + self.id
         )
 
@@ -95,7 +82,7 @@ class BloxUser(BloxType):
     async def follow(self):
         hook = await self.client.http_request(
             "POST",
-            "api.roblox.com",
+            DEFAULT_ENDPOINT,
             "/user/follow?followedUserId=" + self.id
         )
 
@@ -105,7 +92,7 @@ class BloxUser(BloxType):
     async def unfollow(self):
         hook = await self.client.http_request(
             "POST",
-            "api.roblox.com",
+            DEFAULT_ENDPOINT,
             "/user/unfollow?followedUserId=" + self.id
         )
 
@@ -115,7 +102,7 @@ class BloxUser(BloxType):
     async def block(self):
         hook = await self.client.http_request(
             "POST",
-            "api.roblox.com",
+            DEFAULT_ENDPOINT,
             "/userblock/block?userId=" + self.id
         )
     
@@ -125,7 +112,7 @@ class BloxUser(BloxType):
     async def unblock(self):
         hook = await self.client.http_request(
             "POST",
-            "api.roblox.com",
+            DEFAULT_ENDPOINT,
             "/userblock/unblock?userId=" + self.id
         )
 
@@ -134,7 +121,7 @@ class BloxUser(BloxType):
     async def fetch_friends(self):
         hook = await self.client.http_request(
             "GET",
-            "friends.roblox.com",
+            FRIENDS_ENDPOINT,
             "/v1/users/" + self.id + "/friends"
             )
         try:
@@ -152,14 +139,5 @@ class BloxUser(BloxType):
                 "User has no friends"
                 )
 
-        self._friends = friend_list
         return friend_list
-    
-    @property
-    def friends(self):
-        if hasattr(self, '_friends'):
-            return self._friends
-        else:
-            raise AttributeNotFetched(
-                    "friends"
-                )
+   

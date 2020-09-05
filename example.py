@@ -3,14 +3,19 @@ import PyBlox2
 import time
 
 # the verbose arguement could be ignored
-client = PyBlox2.BloxClient(verbose=False)
+client = PyBlox2.BloxClient()
 
-# true async
 @client.event
-async def ready():
-    await client.fetch_friend_requests()
-    print(client.friend_requests)
+async def ready(ctx):
+    await client.fetch("friend_requests")
+    player = client.friend_requests[0]
+    await player.fetch("friends")
+    print(player.friends[0])
 
+@client.event
+async def request(ctx):
+    pass
+    print("Received status code ", ctx[0].status)
 
-client.run(ROBLOSECURITY)
+client.run(ROBLOSECURITY) # ROBLOSECURITY COOKIE
 

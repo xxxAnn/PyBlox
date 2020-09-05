@@ -3,7 +3,7 @@ __author__ = 'Kyando'
 __license__ = 'MIT'
 
 
-from .RobloxWebClient import BloxClient
+from .Client import BloxClient
 from .General import BloxUser
 from .General import BloxType
 from .Errors import RobloxApiError, PyBloxException

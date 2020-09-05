@@ -9,22 +9,7 @@ from .General import BloxUser
 from .Ranks import BloxRank
 from .Settings import BloxSettings
 from .Member import BloxMember
-
-
-GROUPS_ENDPOINT = "groups.roblox.com"
-
-
-def handle_error(func):
-
-    async def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-        if result.status != 200:
-            raise RobloxApiError(
-                result.status,
-                result.text
-            )
-    
-    return wrapper
+from .utils.Endpoints import *
 
 
 class BloxGroup(BloxType):
@@ -33,6 +18,7 @@ class BloxGroup(BloxType):
         super().__init__(client)
         self.id = str(group_id)
         self.roles = roles
+        self.can_fetch("join_requests", "members", "name")
 
     def __str__(self):
         return self.name
@@ -55,6 +41,7 @@ class BloxGroup(BloxType):
             raise PyBloxException(
                 "Group name is invalid"
                 )
+
         return name
 
     async def _cvrt_dict_blox_member(self, list):
@@ -139,7 +126,6 @@ class BloxGroup(BloxType):
             next_page = data.get("nextPageCursor")
             list_members.extend(create_members(self, data.get("data")))
         
-        self._members = list_members
         return list_members
 
     async def fetch_join_requests(self):
@@ -200,29 +186,9 @@ class BloxGroup(BloxType):
             next_page = data.get("nextPageCursor")
             list_members.extend(create_users(data.get("data")))
 
-        self._joinrequests = list_members
         return list_members
 
-    # Properties
-    @property
-    def members(self):
-        if hasattr(self, '_members'):
-            return self._members
-        else:
-            raise AttributeNotFetched(
-                    "members"
-                )
-
-    @property
-    def join_requests(self):
-        if hasattr(self, '_joinrequests'):
-            return self._joinrequests
-        else:
-            raise AttributeNotFetched(
-                    "join_requests"
-                )
-
-    async def get_settings(self):
+    async def fetch_settings(self):
         '''
         Get the group's settings and return them as BloxSettings object
         '''
@@ -241,3 +207,4 @@ class BloxGroup(BloxType):
         data = json.loads(hook.text)
 
         return BloxSettings(payload=data)
+        

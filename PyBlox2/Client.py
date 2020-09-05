@@ -1,43 +1,25 @@
+# Builtin
 import re
 import json
 import enum
 import asyncio
 import http.client
 
-#
+# Extern
 import aiohttp
+from printy import printy
 
 # Local
 from .General import BloxUser
 from .Groups import BloxGroup
 from .Errors import *
-from .response import BloxResponse
-
-FFDoPrint = True
-FFPrintHttp = True
-
+from .Response import BloxResponse
+from .Base import DataContainer, Emitter
+from .utils.Endpoints import *
 
 
 csrfTokenRegex = re.compile(r"Roblox.XsrfToken.setToken\('(.+)'\)")
 rbxRootDomain:http.client.HTTPSConnection = None
-
-
-class HttpContentType():
-    ApplicationJson = "application/json"
-    ApplicationXml = "application/xml"
-    ApplicationUrlEncoded = 2
-    PlainText = 3
-    XmlText = 4
-
-
-
-class HttpMethodType(enum.Enum):
-    GET = 0
-    POST = 1
-    PATCH = 2
-    DELETE = 3
-    OPTIONS = 4
-
 
 class BloxClient():
 
@@ -45,47 +27,50 @@ class BloxClient():
     __cookies:dict = None
 
     __authenticated:bool = False
-    __clientSettings:dict = None
+    __client_settings:dict = None
 
     def __init__(self, verbose=False, loop=None):
 
         self.__headers = {}
         self.__cookies = {}
+        self.__printed = ""
+        self.__count = 0
 
         self.__authenticated = False
-        self.__clientSettings = {}
+        self.__client_settings = {}
+        self.__listener = Emitter() # coro.__name__: coro 
 
         self.verbose = verbose
-        self.loop = asyncio.get_event_loop() if loop is None else loop
+        self.loop = asyncio.get_event_loop() if loop == None else loop
 
 
     async def connect(self, authCookie):
         '''
         Creates the connection header and verifies the connection
         '''
-        self.__setCookie(".ROBLOSECURITY", authCookie, None)
+        self.__set_cookie(".ROBLOSECURITY", authCookie, None)
         self._session = aiohttp.ClientSession(loop=self.loop)
-        csrfToken = await self.__updateCSRFToken(self.__headers.copy())
+        csrfToken = await self.__update_csrf_token(self.__headers.copy())
 
         newCookies = {}
-        success = await self.__validateLogin(self.__headers.copy())
+        success = await self.__validate_login(self.__headers.copy())
         if not success:
-            if self.verbose:
-                print("> .ROBLOSECURITY Cookie Expired <")
+            self.print("> .ROBLOSECURITY Cookie Expired <")
             raise Exception(".ROBLOSECURITY Cookie Expired")
 
         self.__authenticated = True
-        await self.__updateCSRFToken(self.__headers.copy())
+        await self.__update_csrf_token(self.__headers.copy())
 
-        await self.http_request("GET", "www.roblox.com", "/")
+        self.colour_print("> Connection Established <", "cB")
+        try:
+            await self._emit("ready")
+        except CustomEventException:
+            raise
+        finally:
+            await self._session.close()
 
-        print("> RobloxWebClient Connection Established <")
-        if hasattr(self, 'ready'):
-            try:
-                await self.ready()
-            finally:
-                await self._session.close()
-
+    def colour_print(self, txt, flag):
+        printy(txt, flag)
 
     def run(self, auth_cookie):
         '''
@@ -95,6 +80,10 @@ class BloxClient():
 
         async def start():
             await self.connect(auth_cookie)
+            await self._session.close()
+
+        async def close_session():
+            await self._session.close()
 
         def kill_loop(f):
             loop.stop()
@@ -104,7 +93,7 @@ class BloxClient():
         try:
             loop.run_forever()
         except KeyboardInterrupt:
-            return # Should clean remnant tasks
+            pass
         finally:
             runner.remove_done_callback(kill_loop) # If we keep this it will be executed after the loop is stopped and raise an Error
     
@@ -116,84 +105,108 @@ class BloxClient():
             raise TypeError(
                 'event registered must be a coroutine function'
                 )
-        
-        setattr(self, coro.__name__, coro)
+        self.__listener.add(coro.__name__, coro)
 
         return coro
 
-    async def __validateLogin(self, headers) -> bool:
+    async def _emit(self, event: str, *payload):
+        '''
+        Shorthand for emitter.fire
+        '''
+        try:
+            await self.__listener.fire(event, payload)
+        except Exception:
+            raise CustomEventException(event)
 
-        if FFDoPrint:
-            if self.verbose:
-                print("Validating Auth")
+    def print(self, text):
+        if self.verbose:
+            realtext = text
+            if text == self.__printed:
+                self.__count+=1
+            else:
+                if self.__count>0:
+                    realtext = "\n" + text
+                self.__count = 0
+            if self.__count>0:
+                printy("x{}".format(self.__count), "rB", end="\r")
+                return
+            printy(realtext, "rB")
+            self.__printed = text
+
+    async def __validate_login(self, headers) -> bool:
+
+        self.print("Validating Auth")
 
         x = await self.request(method='GET', url="https://www.roblox.com/my/settings/json", data=None, headers=headers)
 
         try:
-            self.__clientSettings = json.loads(x.text)
+            self.__client_settings = json.loads(x.text)
         except:
             return False
 
-        if self.__clientSettings["UserId"] != None:
+        if self.__client_settings["UserId"] != None:
             return True
         else:
             return False
 
-    async def fetch_friend_requests(self):
+    async def fetch(self, value):
 
-        list_members = []
+        self.print("Fetching: " + value.replace("_", " "))
 
-        uri = "/v1/my/friends/requests?sortOrder=Asc&limit={0}".format(100)
-        hook = await self.http_request(
-            "GET",
-            "friends.roblox.com",
-            uri
-            )
-        if hook.status != 200:
-            raise RobloxApiError(
-                hook.status,
-                hook.read().decode("utf-8")
-            )
+        if "friend_requests" in value:
+            list_members = []
 
-        def create_user(list):
+            uri = "/v1/my/friends/requests?sortOrder=Asc&limit={0}".format(100)
+            hook = await self.http_request(
+                "GET",
+                FRIENDS_ENDPOINT,
+                uri
+                )
+            if hook.status != 200:
+                raise RobloxApiError(
+                    hook.status,
+                    hook.read().decode("utf-8")
+                )
 
-            result_list = []
+            def create_user(list):
 
-            for user_dict in list:
-                result_list.append(BloxUser(client=self, user_id=str(user_dict.get("id")), username=user_dict.get("name")))
+                result_list = []
 
-            return result_list
+                for user_dict in list:
+                    result_list.append(BloxUser(client=self, user_id=str(user_dict.get("id")), username=user_dict.get("name")))
 
-        data = json.loads(hook.text)
-        list_members.extend(create_user(data.get("data")))
+                return result_list
 
-        done = False
-
-        next_page = data.get("nextPageCursor")
-        
-        while not done:
-
-            if not isinstance(next_page, str):
-                done = True
-                continue
-
-            hook = await self.http_requset(
-            "GET",
-            "friends.roblox.com",
-            uri + "&cursor=" + str(next_page)
-            )
             data = json.loads(hook.text)
-            next_page = data.get("nextPageCursor")
             list_members.extend(create_user(data.get("data")))
 
-        self._friend_requests = list_members
-        return list_members
+            done = False
 
-    def __setHeader(self, key, value):
+            next_page = data.get("nextPageCursor")
+        
+            while not done:
+
+                if not isinstance(next_page, str):
+                    done = True
+                    continue
+
+                hook = await self.http_requset(
+                "GET",
+                FRIENDS_ENDPOINT,
+                uri + "&cursor=" + str(next_page)
+                )
+                data = json.loads(hook.text)
+                next_page = data.get("nextPageCursor")
+                list_members.extend(create_user(data.get("data")))
+
+            self._friend_requests = list_members
+            return list_members
+
+    def __set_header(self, key, value):
         self.__headers[key] = value
 
 
-    def __setCookie(self, key, value, cookieProps):
+    def __set_cookie(self, key, value, cookieProps):
         self.__cookies[key] = value
 
         cookieList = []
@@ -203,22 +216,24 @@ class BloxClient():
             cookieList.append(v)
             cookieList.append(";")
 
-        self.__setHeader("Cookie", "".join(cookieList))
+        self.__set_header("Cookie", "".join(cookieList))
 
     async def request(self, method ,url, data=None, headers=None):
+        self.print("Requesting: " + url)
         async with self._session.request(method=method, url=url, data=data, headers=headers) as resp:
             assert resp.status == 200
             text = await resp.text()
             return BloxResponse(status=resp.status, text=text, headers=resp.headers)
 
-    async def __updateCSRFToken(self, headers):
+    async def __update_csrf_token(self, headers):
         response = await self.request(method='GET', url='https://www.roblox.com/', data=None, headers=headers)
 
         if response.status == 302:
+            self.print("Redirecting")
             conn = http.client.HTTPSConnection("www.roblox.com")
             conn.request("GET", response.headers.get("location"), None, headers)
             response = conn.getresponse()
-
+            
         token = re.findall(
             csrfTokenRegex,
             response.text
@@ -226,10 +241,8 @@ class BloxClient():
 
         if len(token) > 0:
             if self.__headers.get("X-CSRF-TOKEN", None) != token[0]:
-                if FFDoPrint:
-                    if self.verbose:
-                        print("> Updated X-CSRF-TOKEN " + token[0] + " <")
-                self.__setHeader("X-CSRF-TOKEN", token[0])
+                self.print("> Updated X-CSRF-TOKEN " + token[0] + " <")
+                self.__set_header("X-CSRF-TOKEN", token[0])
 
 
     async def get_user(self, username: str):
@@ -253,7 +266,7 @@ class BloxClient():
     async def get_group(self, group_id: str):
         hook = await self.http_request(
             "GET",
-            "groups.roblox.com",
+            GROUPS_ENDPOINT,
             "/v1/groups/" + str(group_id) + "/roles",
             None,
             None
@@ -266,19 +279,20 @@ class BloxClient():
         roles = json.loads(hook.text)["roles"]
         return BloxGroup(client=self, group_id=group_id, roles=roles)
 
-    def getAccountSettings(self):
-        return self.__clientSettingsfr
+    def get_account_settings(self):
+        return self.__client_settings
 
     async def http_request(self, method, domain, url, content = None, content_type = None) -> BloxResponse:
         global rbxRootDomain
-
+        
         if not self.__authenticated:
             raise PyBloxException(
                 "BloxClient is not Connected!"
                 )
+        
 
         #I WILL TRY TO FIND A BETTER WAY TO DO THIS!
-        await self.__updateCSRFToken(self.__headers)
+        await self.__update_csrf_token(self.__headers)
 
         #Request
         if self._session != None:
@@ -289,6 +303,7 @@ class BloxClient():
             payload_headers["Content-Type"] = content_type
             url = "https://" + domain + url
             response = await self.request(method=method, url=url, data=content, headers=payload_headers)
+            await self._emit("request", response)
 
         return response
 

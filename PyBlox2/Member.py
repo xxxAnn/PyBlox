@@ -1,9 +1,7 @@
 from .General import BloxUser
-from .Errors import RobloxApiError
+from .Errors import RobloxApiError, catch_error
 from .Ranks import BloxRank
-
-
-GROUPS_ENDPOINT = "groups.roblox.com"
+from .utils.Endpoints import *
 
 
 class BloxMember(BloxUser):
@@ -28,6 +26,7 @@ class BloxMember(BloxUser):
         super().__init__(client=client, user_id=user_id, username=username)
         self.group = group
 
+    @catch_error
     async def set_role(self, role: BloxRank):
         '''
         Changes the user's role in the group
@@ -42,24 +41,17 @@ class BloxMember(BloxUser):
             "application/json"
         )
 
-        if hook.status != 200:
-            raise PyBlox2.RobloxApi.RobloxApiError.RobloxApiError(
-                hook.status,
-                hook.text
-            )
+        return hook
     
+    @catch_error
     async def kick(self):
         '''
         kicks the user from the group
         '''
         hook = await self.client.http_request(
             "DELETE",
-            "groups.roblox.com",
+            GROUPS_ENDPOINT,
             "/v1/groups/" + str(self.group.id) + "/users/" + str(self.id)
         )
 
-        if hook.status != 200:
-            raise PyBlox2.RobloxApi.RobloxApiError.RobloxApiError(
-                hook.status,
-                hook.text
-            )
+        return hook
