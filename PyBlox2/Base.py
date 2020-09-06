@@ -46,6 +46,11 @@ class DataContainer():
 
     def add(self, key, value):
         self.__data[key] = value
+        
+    def is_empty(self):
+        if self.__data:
+            return False
+        return True
 
 
 class Emitter(DataContainer):
@@ -56,4 +61,18 @@ class Emitter(DataContainer):
     async def fire(self, name, payload):
         coro = self.find(name)
         if coro:
-            await coro(payload)
+            await coro(*payload)
+            return True
+        return False
+
+class CommandEmitter(Emitter):
+
+    def __init__(self):
+       super().__init__()
+
+    async def fire(self, name, ctx, args):
+        coro = self.find(name)
+        if coro:
+            await coro(ctx, *args)
+
+

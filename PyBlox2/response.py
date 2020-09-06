@@ -1,3 +1,4 @@
+import json
 
 class BloxResponse:
     '''
@@ -18,3 +19,6 @@ class BloxResponse:
         self.text = text
         if headers:
             self.headers = headers
+
+    def json(self):
+        return json.loads(self.text)

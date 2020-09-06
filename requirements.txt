@@ -1,2 +1,2 @@
-aiohttp
-printy
+aiohttp>=3.6.0
+printy==2.1.1

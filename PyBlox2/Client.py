@@ -14,9 +14,9 @@ from .General import BloxUser
 from .Groups import BloxGroup
 from .Errors import *
 from .Response import BloxResponse
-from .Base import DataContainer, Emitter
+from .Base import DataContainer, Emitter, CommandEmitter
 from .utils.Endpoints import *
-
+from .utils.Commands import Commander
 
 csrfTokenRegex = re.compile(r"Roblox.XsrfToken.setToken\('(.+)'\)")
 rbxRootDomain:http.client.HTTPSConnection = None
@@ -29,7 +29,7 @@ class BloxClient():
     __authenticated:bool = False
     __client_settings:dict = None
 
-    def __init__(self, verbose=False, loop=None):
+    def __init__(self, verbose=False, loop=None, prefix: str="!"):
 
         self.__headers = {}
         self.__cookies = {}
@@ -38,13 +38,16 @@ class BloxClient():
 
         self.__authenticated = False
         self.__client_settings = {}
-        self.__listener = Emitter() # coro.__name__: coro 
+        self.__listener = Emitter() #
+        self.__commands = CommandEmitter() #
+        self.__commander = Commander() #
+        self.prefix = prefix
 
         self.verbose = verbose
         self.loop = asyncio.get_event_loop() if loop == None else loop
 
 
-    async def connect(self, authCookie):
+    async def connect(self, authCookie, **kwargs):
         '''
         Creates the connection header and verifies the connection
         '''
@@ -63,23 +66,32 @@ class BloxClient():
 
         self.colour_print("> Connection Established <", "cB")
         try:
-            await self._emit("ready")
+            await self._emit("ready", ("I'm ready!",))
         except CustomEventException:
             raise
-        finally:
-            await self._session.close()
+        if kwargs["group_id"]:
+            try:
+                listening_group = await self.get_group(kwargs.pop("group_id"))
+                await self.__commander.start_listening(self, self.__commands, listening_group)
+            except KeyboardInterrupt:
+                pass
+            except Exception:
+                raise
+            finally:
+                await self._session.close()
+        await self._session.close()
 
     def colour_print(self, txt, flag):
         printy(txt, flag)
 
-    def run(self, auth_cookie):
+    def run(self, auth_cookie, **kwargs):
         '''
         Starts the connect coroutine and runs the loop
         '''
         loop = self.loop
 
         async def start():
-            await self.connect(auth_cookie)
+            await self.connect(auth_cookie, **kwargs)
             await self._session.close()
 
         async def close_session():
@@ -95,30 +107,56 @@ class BloxClient():
         except KeyboardInterrupt:
             pass
         finally:
-            runner.remove_done_callback(kill_loop) # If we keep this it will be executed after the loop is stopped and raise an Error
+            runner.remove_done_callback(kill_loop)
     
     def event(self, coro):
         '''
-        Registers an event and calls it at appropriate times
+        Registers an event
         '''
         if not asyncio.iscoroutinefunction(coro):
             raise TypeError(
                 'event registered must be a coroutine function'
                 )
+
         self.__listener.add(coro.__name__, coro)
 
         return coro
-
-    async def _emit(self, event: str, *payload):
+    
+    def command(self, coro):
         '''
-        Shorthand for emitter.fire
+        Registers a command
+        '''
+        if not asyncio.iscoroutinefunction(coro):
+            raise TypeError(
+                'event registered must be a coroutine function'
+                )
+
+        self.__commands.add(coro.__name__, coro)
+
+        return coro
+
+    async def _emit(self, event: str, payload):
+        '''
+        Shorthand for self.__listner.fire
         '''
         try:
-            await self.__listener.fire(event, payload)
+            return await self.__listener.fire(event, payload)
         except Exception:
             raise CustomEventException(event)
 
+    async def push_command(self, name, ctx, args):
+        '''
+        Shorthand for self.__commands.fire
+        '''
+        try:
+            await self.__commands.fire(name, ctx, args)
+        except Exception:
+            raise CustomEventException(name)
+
     def print(self, text):
+        '''
+        Printing additional info for verbose
+        '''
         if self.verbose:
             realtext = text
             if text == self.__printed:
@@ -248,7 +286,7 @@ class BloxClient():
     async def get_user(self, username: str):
         response = await self.http_request(
         "GET",
-        "api.roblox.com",
+        DEFAULT_ENDPOINT,
         "/users/get-by-username?username=" + username,
         None,
         None

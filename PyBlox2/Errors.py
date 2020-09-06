@@ -34,6 +34,15 @@ class CustomEventException(PyBloxException):
         error_message = "There was an error executing the {} event".format(event_name)
         super().__init__(error_message)
 
+class CommandException(PyBloxException):
+    pass
+
+class MissingRequiredArgument(CommandException):
+
+    def __init__(self, command_name):
+        error_message = "Missing required argument in command {}".format(command_name)
+        super().__init__(error_message)
+
 def catch_error(function):
 
     async def wrapper(*args, **kwargs):
