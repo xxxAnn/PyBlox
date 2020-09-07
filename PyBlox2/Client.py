@@ -16,7 +16,7 @@ from .Errors import *
 from .Response import BloxResponse
 from .Base import DataContainer, Emitter, CommandEmitter
 from .utils.Endpoints import *
-from .utils.Commands import Commander
+from .extra import Commander
 
 csrfTokenRegex = re.compile(r"Roblox.XsrfToken.setToken\('(.+)'\)")
 rbxRootDomain:http.client.HTTPSConnection = None

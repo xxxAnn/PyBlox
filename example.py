@@ -5,10 +5,8 @@ client = PyBlox2.BloxClient(prefix="!")
 
 @client.event
 async def ready(payload):
-    await client.fetch("friend_requests")
-    player = client.friend_requests[0]
-    await player.fetch("friends")
-    print(player.friends[0])
+    print("Logged in")
+    print("---------")
 
 @client.command
 async def ping(ctx, text):

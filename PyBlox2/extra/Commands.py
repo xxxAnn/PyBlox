@@ -7,7 +7,8 @@ class Commander:
         self.__commands = commands
         self.__client = client
         self.__listening_to = listening_to
-        self.__last_message = 0
+        self.__already_seen = []
+        self.__is_first = True
         self.prefix = client.prefix
         await self.start_loop()
 
@@ -23,14 +24,17 @@ class Commander:
             "/v1/groups/{}/wall/posts?limit=10&sortOrder=Desc".format(self.__listening_to.id)
             )
         for msg in hook.json()['data']:
+            if self.__is_first:
+                    self.__already_seen.append(msg["id"])
             if await self.check_entity(msg):
                 await self.process_new_message(msg)
+        if self.__is_first:
+            self.__is_first = False
 
     async def check_entity(self, msg):
-        if msg["id"] > self.__last_message:
-            if self.__last_message != 0:
-                return True
-            self.__last_message = msg["id"]
+        if not msg["id"] in self.__already_seen:
+           self.__already_seen.append(msg["id"])
+           return True
         return False
 
     async def process_new_message(self, msg):
