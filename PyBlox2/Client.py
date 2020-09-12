@@ -1,11 +1,4 @@
-# Builtin
-import re
-import json
-import enum
 import asyncio
-import http.client
-
-import aiohttp
 
 from .User import BloxUser
 from .Groups import BloxGroup
@@ -13,9 +6,6 @@ from .Errors import *
 from .Response import BloxResponse
 from .Base import DataContainer, Emitter, CommandEmitter
 from .utils import HttpClient, Url, Cache, Commander
-
-
-rbxRootDomain:http.client.HTTPSConnection = None
 
 class BloxClient:
 
