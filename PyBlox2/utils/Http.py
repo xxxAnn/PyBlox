@@ -60,12 +60,8 @@ class HttpClient:
             await self.__session.close()
 
     async def connect(self, roblosecurity):
-        '''
-        Creates the connection header and verifies the connection
-        '''
         self.__set_cookie(".ROBLOSECURITY", roblosecurity, None)
         self.__session = aiohttp.ClientSession(loop=self.__loop)
-        await self.__actualize_token()
         user = await self.__complete_login(self.__headers.copy())
 
         self.__authed = True
@@ -111,6 +107,7 @@ class HttpClient:
             return response
 
     async def __actualize_token(self):
+        logger.warning("X-CSRF Token is invalid, updating...")
         response = await self.__raw_request(method='GET', url='https://www.roblox.com/')
             
         token = re.findall(
