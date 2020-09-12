@@ -5,6 +5,4 @@
 /build/lib/PyBlox2
 /dist
 /PyBlox2.egg-info
-/env/Scripts
-/env/pyvenv.cfg
-/env/Lib/site-packages
+/env
