@@ -57,5 +57,13 @@ async def start_listening(guild):
     # Otherwise it will error
     print("Listening to guild", guild)
 
+# If a group_id is provided here then it will be
+# listened to for any commands or message
+# 
+# On the other hand if the argument is ignored then
+# the code will shutdown after executing the ready event
+#
+# client.run IS a blocking call meaning that any code
+# after it will not be executed until its finished
 client.run(ROBLOSECURITY, group_id=3891491)
 
