@@ -5,7 +5,6 @@ High level library for making Roblox bots in Python
 #### A Basic Example
 ```python
 import PyBlox2
-import time
 
 client = PyBlox2.BloxClient()
 
@@ -26,7 +25,6 @@ client.run(ROBLOSECURITY) # ROBLOSECURITY COOKIE
 #### Changing someone's role
 ```python
 import PyBlox2
-import time
 
 client = PyBlox2.BloxClient()
 
