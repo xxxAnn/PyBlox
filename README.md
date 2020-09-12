@@ -37,7 +37,8 @@ async def ready(ctx):
 
 @client.event
 async def request(ctx):
-    print("Received status code ", ctx[0].status)
+    
+    ("Received status code ", ctx[0].status)
 
 client.run(ROBLOSECURITY) # ROBLOSECURITY COOKIE
 ```

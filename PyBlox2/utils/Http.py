@@ -24,6 +24,7 @@ SOFTWARE.
 
 import logging
 import re
+import asyncio
 
 import aiohttp
 
@@ -56,8 +57,7 @@ class HttpClient:
         HttpClient.__instance = self
 
     async def close(self):
-        if self.__authed:
-            await self.__session.close()
+        await self.__session.close()
 
     async def connect(self, roblosecurity):
         self.__set_cookie(".ROBLOSECURITY", roblosecurity, None)
@@ -84,9 +84,12 @@ class HttpClient:
 
     async def __raw_request(self, method, url, data=None, headers=None) -> BloxResponse:
         logger.debug("Requesting url {}".format(url))
-        async with self.__session.request(method=method, url=url, data=data, headers=headers) as resp:
-            text = await resp.text()
-            return BloxResponse(status=resp.status, text=text, headers=resp.headers)
+        try:
+            async with self.__session.request(method=method, url=url, data=data, headers=headers) as resp:
+                text = await resp.text()
+                return BloxResponse(status=resp.status, text=text, headers=resp.headers)
+        except Exception as e:
+            print(e)
 
     async def request(self, method, url, data=None, headers=None, retries=0):
         if not headers:

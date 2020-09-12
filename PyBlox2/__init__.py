@@ -12,5 +12,6 @@ from .Member import BloxMember
 from .Ranks import BloxRank
 from .Settings import BloxSettings
 from .Base import BloxType
+from .Connect import connect
 
 logging.getLogger(__name__)
