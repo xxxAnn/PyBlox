@@ -143,10 +143,7 @@ class Url:
         '''
         url = self.__fullurl + extension_url
         fullparams = self.__unparsedparams.extend(params)
-        if fullparms:
-            for k, v in fullparams.items():
-                url = url.replace('%'+k+'%', str(v), 1)
-        self.__url = "https://" + url
+        return Url("", url, **fullparams)
 
     ''' HTTP methods '''
     async def get(self, data=None, headers=None):
