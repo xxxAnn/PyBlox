@@ -1,3 +1,7 @@
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class RobloxApiError(BaseException):
     '''
@@ -21,22 +25,26 @@ class HttpError(BaseException):
     Unauthorized = "401 Unauthorized"
     @staticmethod
     def error(code):
-        if code == 404: raise NotFound()
-        elif code == 403: raise Forbidden()
-        elif code == 401: raise Unauthorized()
+        logger.fatal("Panicked at HTTP error code {}".format(code))
+        if code == 404: 
+            raise NotFound()
+        elif code == 403: 
+            raise Forbidden()
+        elif code == 401: 
+            raise Unauthorized()
         raise HttpError("Received an http error code {}".format(code))
 
 class NotFound(HttpError):
     def __init__(self):
-        super().__init__(HttpErrors.NotFound)
+        super().__init__(HttpError.NotFound)
 
 class Unauthorized(HttpError):
     def __init__(self):
-        super().__init__(HttpErrors.Unauthorized)
+        super().__init__(HttpError.Unauthorized)
 
 class Forbidden(HttpError):
     def __init__(self):
-        super().__init__(HttpErrors.Unauthorized)
+        super().__init__(HttpError.Unauthorized)
 
 class PyBloxException(BaseException):
 
