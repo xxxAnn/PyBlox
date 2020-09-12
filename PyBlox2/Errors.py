@@ -59,15 +59,3 @@ class BadArguments(CommandException):
     def __init__(self, command_name):
         error_message = "Amount or type of argument(s) is invalid in command {}".format(command_name)
         super().__init__(error_message)
-
-def catch_error(function):
-
-    async def wrapper(*args, **kwargs):
-        response = await function(*args, **kwargs)
-        if response.status != 200:
-            raise RobloxApiError(
-                response.status,
-                response.text
-            )
-
-    return wrapper
