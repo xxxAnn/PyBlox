@@ -12,6 +12,7 @@ class BloxType():
         if attr in self._fetchable:
             resp = await self._fetcher(attr)
             setattr(self, "_"+attr, resp)
+            return resp
 
     def can_fetch(self, *data):
         self._fetchable.extend(data)
