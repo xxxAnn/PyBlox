@@ -79,6 +79,7 @@ class HttpClient:
 
         if not response.status == 200:
             if not retries>0:
+                logger.debug("Attempting to actualize X-CSRF token after receiving an error")
                 await self.__actualize_token()
                 await self.request(method, url, data, headers, retries=retries+1)
             HttpError.error(response.status)
