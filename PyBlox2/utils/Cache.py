@@ -46,7 +46,7 @@ class Cache:
             attr = attr.replace("get_", "")
 
             def __wrap(k):
-                logger.debug("Checking cache for an object of type {0} named {1}".format(attr, k))
+                logger.debug("Checking cache for an object of type {0} identified by {1}".format(attr, k))
                 try:
                     return getattr(self, attr).get(k)
                 except (TypeError, AttributeError):
