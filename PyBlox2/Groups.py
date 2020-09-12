@@ -21,7 +21,9 @@ class BloxGroup(BloxType):
         self.can_fetch("join_requests", "members", "name")
 
     def __str__(self):
-        return self.name or "Unknown"
+        if self.name:
+            return self.name
+        raise AttributeNotFetched("name")
     
     async def fetch_name(self):
         hook = await Url("groups", "/v1/groups/%id%", id=self.id).get()
