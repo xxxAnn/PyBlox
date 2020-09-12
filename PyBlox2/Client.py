@@ -44,7 +44,7 @@ class BloxClient:
                 user_data = await self.__http.connect(auth_cookie)
                 self.user = BloxUser(self, user_data[0], user_data[1])
                 await self._emit("ready", ("I'm ready",))
-                if kwargs["group_id"]:
+                if kwargs.get("group_id"):
                     listening_group = await self.get_group(kwargs.pop("group_id"))
                     await self.__commander.start_listening(self, self.__commands, listening_group)
             except KeyboardInterrupt:
