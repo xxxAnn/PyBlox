@@ -4,14 +4,6 @@ from .Errors import *
 from .Base import BloxType
 from .utils import Url
 
-def handle_response(response):
-    if response.status != 200:
-            raise RobloxApiError(
-                response.status,
-                response.text
-            )
-    return
-
 class BloxUser(BloxType):
     '''
     A handler for a roblox user
