@@ -1,7 +1,13 @@
+import logging
+
 import asyncio
 
 from ..Errors import *
 from ..utils import Url
+
+
+logger = logging.getLogger(__name__)
+
 
 class Commander:
     
@@ -18,6 +24,7 @@ class Commander:
     async def start_loop(self):
         await self.__client._emit("start_listening", (self.__listening_to,))
         while True:
+            logger.debug("Iterating")
             await self.check_messages()
             await asyncio.sleep(5)
 
@@ -51,7 +58,7 @@ class Commander:
         args = tuple(flags)
         try:
             await self.__client.push_command(function_name, ctx, args)
-        except (TypeError, CustomEventException) as e:
+        except TypeError as e:
             if await self.__client._emit("error", (ctx, e)):
                 return
             raise BadArguments(
@@ -67,8 +74,18 @@ class Commander:
 
 class Context:
     def __init__(self, user, ctt):
-        self.user = user
+        self.__user_or_member = user
         self.content = ctt
+
+    @property
+    def member(self):
+        if self.__user_or_member.group:
+            return self.__user_or_member
+
+    @property
+    def user(self):
+        if not self.__user_or_member.group:
+            return self.__user_or_member
 
 
 
