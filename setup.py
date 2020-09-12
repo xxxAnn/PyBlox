@@ -10,7 +10,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="PyBlox2",
-    version="v1.0.0-rc.0",
+    version="v1.0.0-rc.1",
     author="Kyando",
     author_email="amehikoji@gmail.com",
     description="Handler for the Roblox API",
