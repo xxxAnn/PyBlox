@@ -13,7 +13,7 @@ class Cache:
                 logger.debug("Adding an object of type {0} named {1} to the cache".format(attr, k))
                 try:
                     getattr(self, attr)[k] = v
-                except TypeError:
+                except:
                     setattr(self, attr, {k: v})
 
             return __wrap
@@ -25,7 +25,7 @@ class Cache:
                 logger.debug("Checking cache for an object of type {0} named {1}".format(attr, k))
                 try:
                     return getattr(self, attr).get(k)
-                except TypeError:
+                except (TypeError, AttributeError):
                     setattr(self, attr, {})
                     return None
 
