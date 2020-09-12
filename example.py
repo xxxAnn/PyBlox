@@ -9,6 +9,7 @@ client = PyBlox2.BloxClient(prefix="!")
 
 @client.event
 async def ready(payload):
+    assert payload[0] == "I'm ready"
     print("xx---xx")
     print("Logged in as")
     print(client.user.name)
