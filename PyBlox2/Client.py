@@ -12,8 +12,7 @@ from .Groups import BloxGroup
 from .Errors import *
 from .Response import BloxResponse
 from .Base import DataContainer, Emitter, CommandEmitter
-from .utils import HttpClient, Url
-from .extra import Commander
+from .utils import HttpClient, Url, Cache, Commander
 
 
 rbxRootDomain:http.client.HTTPSConnection = None
@@ -27,6 +26,7 @@ class BloxClient:
         self.__listener = Emitter() 
         self.__commands = CommandEmitter() 
         self.__commander = Commander() 
+        self.__cache = Cache()
         self.prefix = prefix
 
         self.verbose = verbose
@@ -152,17 +152,29 @@ class BloxClient:
             return list_members
 
     async def get_user(self, username: str):
+        if self.__cache.get_user(username):
+            return self.__cache.get_user(username)
+
         access = Url("default", "/users/get-by-username?username=%username%", username=username)
         hook = await access.get()
 
         id = hook.json["Id"]
-        return BloxUser(client=self, user_id=id, username=username)
+        user = BloxUser(client=self, user_id=id, username=username)
+        self.__cache.add_user(username, user)
+        return user
 
     async def get_group(self, group_id: str):
-        access = Url("groups", "/v1/groups/%group_id%/roles", group_id=group_id)
+        if self.__cache.get_group(str(group_id)):
+            return self.__cache.get_group(str(group_id))
+
+        # Just confirmation that the group actually exists
+        access = Url("groups", "/v1/groups/%group_id%/roles", group_id=group_id) 
         hook = await access.get()
+
         roles = hook.json["roles"]
-        return BloxGroup(client=self, group_id=group_id, roles=roles)
+        group = BloxGroup(client=self, group_id=group_id, roles=roles)
+        self.__cache.add_group(str(group_id),group)
+        return group
 
     @property
     def friend_requests(self):
