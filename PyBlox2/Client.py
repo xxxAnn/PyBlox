@@ -115,8 +115,6 @@ class BloxClient:
 
     async def fetch(self, value):
 
-        self.print("Fetching: " + value.replace("_", " "))
-
         if "friend_requests" in value:
             list_members = []
 
@@ -165,9 +163,6 @@ class BloxClient:
         hook = await access.get()
         roles = hook.json["roles"]
         return BloxGroup(client=self, group_id=group_id, roles=roles)
-
-    def get_account_settings(self):
-        return self.__client_settings
 
     @property
     def friend_requests(self):
