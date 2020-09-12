@@ -63,7 +63,7 @@ class HttpClient:
         return [resp.get("UserId"), resp.get("Name")]
 
     async def __raw_request(self, method, url, data=None, headers=None) -> BloxResponse:
-        logger.info("Requesting url {}".format(url))
+        logger.debug("Requesting url {}".format(url))
         async with self.__session.request(method=method, url=url, data=data, headers=headers) as resp:
             text = await resp.text()
             return BloxResponse(status=resp.status, text=text, headers=resp.headers)
