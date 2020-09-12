@@ -151,7 +151,14 @@ class BloxClient:
             self._friend_requests = list_members
             return list_members
 
-    async def get_user(self, username: str):
+    async def get_user(self, username: str, user_id=None):
+
+        if user_id:
+            access = Url("default", "/users/%id%", id=user_id)
+            hook = await access.get()
+            username = hook.json.get("Username")
+            return await self.get_user(username=username, user_id=None)
+
         if self.__cache.get_user(username):
             return self.__cache.get_user(username)
 
