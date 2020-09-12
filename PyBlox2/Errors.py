@@ -51,12 +51,6 @@ class AttributeNotFetched(PyBloxException):
         error_message = "Attribute '{}' was accessed before being fetched".format(attribute)
         super().__init__(error_message)
 
-class CustomEventException(PyBloxException):
-    
-    def __init__(self, event_name):
-        error_message = "There was an error executing the {} event".format(event_name)
-        super().__init__(error_message)
-
 class CommandException(PyBloxException):
     pass
 
