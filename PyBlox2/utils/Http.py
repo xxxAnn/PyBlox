@@ -119,6 +119,9 @@ class HttpClient:
 class Url:
 
     def __init__(self, endpoint: str, url: str, **params):
+        self.__fullurl = endpoint + url
+        self.__unparsedparams = params
+
         endpoint = ENDPOINTS.get(str.lower(endpoint), endpoint)
         self.__http = HttpClient.get()
         if params:
@@ -130,6 +133,20 @@ class Url:
     @property
     def url(self):
         return self.__url
+
+    def extend(self, extension_url, **params):
+        '''
+        For example:
+            url = Url("friends", "/v1/users/%user_id%/friends", user_id=...)
+            url.extend("/count")
+        (Note: this is purely experimental)
+        '''
+        url = self.__fullurl + extension_url
+        fullparams = self.__unparsedparams.extend(params)
+        if fullparms:
+            for k, v in fullparams.items():
+                url = url.replace('%'+k+'%', str(v), 1)
+        self.__url = "https://" + url
 
     ''' HTTP methods '''
     async def get(self, data=None, headers=None):
