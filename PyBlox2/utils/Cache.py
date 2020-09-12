@@ -7,9 +7,20 @@ class Cache:
     def __getattr__(self, attr):
         if attr.startswith("add_"):
             attr = attr.replace("add_", "")
-            def wrap(self, name):
-                if not hasattr(self, attr):
-                    setattr(self, attr, {})
-                if hasattr(self, attr): # This should theoratically always be true
-                    getattr(self, attr).get(name)
-            return wrap
+            def __wrap(k, v):
+                logger.info("Adding to cache")
+                try:
+                    getattr(self, attr)[k] = v
+                except TypeError:
+                    setattr(self, attr, {k: v})
+            return __wrap
+        elif attr.startswith("get_"):
+            attr = attr.replace("get_", "")
+            def __wrap(k):
+                logger.info("Checking cache")
+                try:
+                    return getattr(self, attr).get(k)
+                except TypeError:
+                    raise
+                    return None
+            return __wrap
