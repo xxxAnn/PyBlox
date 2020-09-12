@@ -7,7 +7,6 @@ High level library for making Roblox bots in Python
 import PyBlox2
 import time
 
-# the verbose arguement could be ignored
 client = PyBlox2.BloxClient()
 
 @client.event
@@ -15,7 +14,8 @@ async def ready(ctx):
     await client.fetch("friend_requests")
     player = client.friend_requests[0]
     await player.fetch("friends")
-    print(player.friends[0])
+    
+    (player.friends[0])
 
 @client.event
 async def request(ctx):
@@ -28,7 +28,6 @@ client.run(ROBLOSECURITY) # ROBLOSECURITY COOKIE
 import PyBlox2
 import time
 
-# the verbose arguement could be ignored
 client = PyBlox2.BloxClient()
 
 @client.event

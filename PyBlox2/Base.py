@@ -2,7 +2,7 @@ from .Errors import AttributeNotFetched
 
 class BloxType():
     '''
-    The base class for all items
+    The base class for most items
     '''
     def __init__(self, client):
         self.client = client
@@ -10,12 +10,10 @@ class BloxType():
 
     async def fetch(self, attr: str):
         if attr in self._fetchable:
-            self.client.print("Fetching attribute: " + attr)
             resp = await self._fetcher(attr)
             setattr(self, "_"+attr, resp)
 
     def can_fetch(self, *data):
-        self.client.print("\nInitializing {}: \nAdding fetchables".format(self.__class__.__name__))
         self._fetchable.extend(data)
 
     async def _fetcher(self, attr): # Default implementation of _fetcher
@@ -30,8 +28,6 @@ class BloxType():
                 return getattr(self, "_"+attr)
             except AttributeError:
                 raise AttributeNotFetched(attr)
-
-
 
 
 class DataContainer():
@@ -74,5 +70,6 @@ class CommandEmitter(Emitter):
         coro = self.find(name)
         if coro:
             await coro(ctx, *args)
+
 
 

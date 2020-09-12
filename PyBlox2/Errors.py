@@ -9,11 +9,34 @@ class RobloxApiError(BaseException):
         self.__msg = api_error_message
     
 
-    def getAPIErrorMessage(self):
+    def get_api_error_message(self):
         return self.__msg
 
-    def getAPIHttpStatus(self):
+    def get_api_http_status(self):
         return self.__status
+
+class HttpError(BaseException):
+    NotFound = "404 Not Found"
+    Forbidden = "403 Forbidden"
+    Unauthorized = "401 Unauthorized"
+    @staticmethod
+    def error(code):
+        if code == 404: raise NotFound()
+        elif code == 403: raise Forbidden()
+        elif code == 401: raise Unauthorized()
+        raise HttpError("Received an http error code {}".format(code))
+
+class NotFound(HttpError):
+    def __init__(self):
+        super().__init__(HttpErrors.NotFound)
+
+class Unauthorized(HttpError):
+    def __init__(self):
+        super().__init__(HttpErrors.Unauthorized)
+
+class Forbidden(HttpError):
+    def __init__(self):
+        super().__init__(HttpErrors.Unauthorized)
 
 class PyBloxException(BaseException):
 
@@ -37,10 +60,10 @@ class CustomEventException(PyBloxException):
 class CommandException(PyBloxException):
     pass
 
-class MissingRequiredArgument(CommandException):
+class BadArguments(CommandException):
 
     def __init__(self, command_name):
-        error_message = "Missing required argument in command {}".format(command_name)
+        error_message = "Amount or type of argument(s) is invalid in command {}".format(command_name)
         super().__init__(error_message)
 
 def catch_error(function):

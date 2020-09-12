@@ -1,35 +1,32 @@
 import json
 from .Errors import *
 from .Base import BloxType
-from .utils.Endpoints import *
+from .utils import Url
 
 
 class BloxRank(BloxType):
-    def __init__(self, payload, guild):
+    def __init__(self, payload, group):
         super().__init__()
         self.name = payload.pop("name")
         self.id = payload.pop("id")
         self.rank = payload.pop("rank")
         self.member_count = payload.pop("memberCount")
         self.description = payload.pop("description")
-        self.guild = guild
+        self.group = group
+        self.can_fetch("members")
 
     async def fetch_members(self):
         role_id = self.id
-        hook = self.guild.client.httpRequest(
-            "GET",
-            GROUPS_ENDPOINT,
-            "/v1/groups/" + str(self.guild.id) + "/roles/"+ str(self.id) +"/users"
-        )
+        access = Url("groups", "/v1/groups/%group_id%/roles/%id%/users", guild_id=self.group.id, id=self.id)
         members_list = []
-        iterable = json.loads(hook.read().decode("utf-8"))["data"]
+        hook = await access.get()
+        iterable = hook.json["data"]
 
-        result = await self.guild._cvrt_dict_blox_member(self, iterable)
+        result = await self.group._cvrt_dict_blox_member(self, iterable)
 
         if result == None:
             raise PyBloxException(
                 "Could not find members"
                 )
         
-        self._members = result
         return result

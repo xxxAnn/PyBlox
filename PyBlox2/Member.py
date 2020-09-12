@@ -1,7 +1,6 @@
-from .General import BloxUser
-from .Errors import RobloxApiError, catch_error
+from .User import BloxUser
 from .Ranks import BloxRank
-from .utils.Endpoints import *
+from .utils import Url
 
 
 class BloxMember(BloxUser):
@@ -25,33 +24,17 @@ class BloxMember(BloxUser):
     def __init__(self, client, user_id: str, username: str, group):
         super().__init__(client=client, user_id=user_id, username=username)
         self.group = group
+        self.__access = Url("groups", "/v1/groups/%group_id%/users/%user_id%", group_id=self.group.id, user_id=self.id)
 
-    @catch_error
     async def set_role(self, role: BloxRank):
         '''
         Changes the user's role in the group
         '''
-        group_id = str(self.group.id)
-
-        hook = await self.client.http_request(
-            "PATCH",
-            GROUPS_ENDPOINT,
-            "/v1/groups/" + str(self.group.id) + "/users/" + str(self.id),
-            "{\"roleId\":" + role_id + "}",
-            "application/json"
-        )
-
-        return hook
+        payload = "{\"roleId\":" + str(role.id) + "}"
+        await self.__access.patch(payload)
     
-    @catch_error
     async def kick(self):
         '''
         kicks the user from the group
         '''
-        hook = await self.client.http_request(
-            "DELETE",
-            GROUPS_ENDPOINT,
-            "/v1/groups/" + str(self.group.id) + "/users/" + str(self.id)
-        )
-
-        return hook
+        await self.__access.delete()

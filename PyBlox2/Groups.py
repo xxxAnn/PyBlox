@@ -5,11 +5,11 @@ import time
 # Local
 from .Errors import *
 from .Base import BloxType
-from .General import BloxUser
+from .User import BloxUser
 from .Ranks import BloxRank
 from .Settings import BloxSettings
 from .Member import BloxMember
-from .utils.Endpoints import *
+from .utils import Url
 
 
 class BloxGroup(BloxType):
@@ -21,25 +21,16 @@ class BloxGroup(BloxType):
         self.can_fetch("join_requests", "members", "name")
 
     def __str__(self):
-        return self.name
+        return self.name or "Unknown"
     
     async def fetch_name(self):
-        hook = await self.client.http_request(
-            "GET",
-            GROUPS_ENDPOINT,
-            "/v1/groups/" + self.id
-            )
-        
-        if hook.status != 200:
-            raise RobloxApiError(
-                hook.status,
-                hook.text
-            )
-        name = json.loads(hook.text).get("name", None)
+        hook = await Url("groups", "/v1/groups/%id%", id=self.id).get()
+
+        name = hook.json.get("name", None)
         
         if name == None:
             raise PyBloxException(
-                "Group name is invalid"
+                "Group name was not found"
                 )
 
         return name
@@ -52,23 +43,14 @@ class BloxGroup(BloxType):
         return real_list
 
     async def get_role(self, name: str):
-        hook = await self.client.http_request(
-            "GET",
-            GROUPS_ENDPOINT,
-            "/v1/groups/" + str(self.id) + "/roles"
-            )
+        hook = await Url("groups", "/v1/groups/%id%/roles", id=self.id).get()
         
-        if hook.status != 200:
-            raise RobloxApiError(
-                hook.status,
-                hook.text
-            )
-        data = json.loads(hook.text)
+        data = hook.json
         roles = data.get("roles")
 
-        for dicto in roles:
-            if dicto.get("name") == name:
-                return BloxRank(payload=dicto, guild=self)
+        for bucket in roles:
+            if bucket.get("name") == name:
+                return BloxRank(payload=bucket, group=self)
 
     async def get_member(self, username: str):
         user = await self.client.get_user(username)
@@ -80,19 +62,9 @@ class BloxGroup(BloxType):
         '''
         list_members = []
 
-        uri = "/v1/groups/{0}/users?sortOrder=Asc&limit={1}".format(self.id, 100)
+        access = Url("groups", "/v1/groups/%id%/users?sortOrder=Asc&limit=100", id=self.id)
 
-        hook = await self.client.http_request(
-            "GET",
-            GROUPS_ENDPOINT,
-            uri
-            )
-
-        if hook.status != 200:
-            raise RobloxApiError(
-                hook.status,
-                hook.text
-            )
+        hook = await access.get()
 
         def create_members(group, list):
 
@@ -104,7 +76,7 @@ class BloxGroup(BloxType):
 
             return result_list
 
-        data = json.loads(hook.text)
+        data = hook.json
         list_members.extend(create_members(self, data.get("data")))
 
         done = False
@@ -117,12 +89,8 @@ class BloxGroup(BloxType):
                 done = True
                 continue
 
-            hook = await self.client.http_request(
-            "GET",
-            GROUPS_ENDPOINT,
-            uri + "&cursor=" + str(next_page)
-            )
-            data = json.loads(hook.text)
+            data = await access.get()
+            data = data.json
             next_page = data.get("nextPageCursor")
             list_members.extend(create_members(self, data.get("data")))
         
@@ -139,19 +107,7 @@ class BloxGroup(BloxType):
 
         list_members = []
 
-        uri = "/v1/groups/{0}/users?sortOrder=Asc&limit={1}".format(self.id, 100)
-
-        hook = self.client.http_request(
-            "GET",
-            GROUPS_ENDPOINT,
-            uri
-            )
-
-        if hook.status != 200:
-            raise RobloxApiError(
-                hook.status,
-                hook.text
-            )
+        access = Url("groups", "/v1/groups/%id%/users?sortOrder=Asc&limit=100", id=self.id)
 
         def create_users(list):
 
@@ -163,7 +119,8 @@ class BloxGroup(BloxType):
 
             return result_list
 
-        data = json.loads(hook.text)
+        data = await access.get()
+        data = data.json
         list_members.extend(create_users(data.get("data")))
 
         done = False
@@ -176,13 +133,8 @@ class BloxGroup(BloxType):
                 done = True
                 continue
 
-            hook = self.client.http_request(
-            "GET",
-            GROUPS_ENDPOINT,
-            uri + "&cursor=" + str(next_page)
-            )
-
-            data = json.loads(hook.text)
+            data = await access.get()
+            data = data.json
             next_page = data.get("nextPageCursor")
             list_members.extend(create_users(data.get("data")))
 
@@ -192,19 +144,9 @@ class BloxGroup(BloxType):
         '''
         Get the group's settings and return them as BloxSettings object
         '''
-        hook = await self.client.http_request(
-            "GET",
-            GROUPS_ENDPOINT,
-            "/v1/groups/" + str(self.id) + "/settings"
-            )
-
-        if hook.status != 200:
-            raise RobloxApiError(
-                hook.status,
-                hook.text
-            )
-
-        data = json.loads(hook.text)
+        access = Url("groups", "v1/groups/%id%/settings", id=self.id)
+        data = await access.get()
+        data = data.json
 
         return BloxSettings(payload=data)
         

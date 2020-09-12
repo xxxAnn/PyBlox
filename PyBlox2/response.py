@@ -20,5 +20,6 @@ class BloxResponse:
         if headers:
             self.headers = headers
 
+    @property
     def json(self):
         return json.loads(self.text)

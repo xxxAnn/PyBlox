@@ -1,5 +1,7 @@
 import asyncio
+
 from ..Errors import *
+from ..utils import Url
 
 class Commander:
     
@@ -10,20 +12,18 @@ class Commander:
         self.__already_seen = []
         self.__is_first = True
         self.prefix = client.prefix
+        self.__access = Url("groups", "/v1/groups/%group_id%/wall/posts?limit=10&sortOrder=Desc", group_id=self.__listening_to.id)
         await self.start_loop()
 
     async def start_loop(self):
+        await self.__client._emit("start_listening", (self.__listening_to,))
         while True:
             await self.check_messages()
             await asyncio.sleep(5)
 
     async def check_messages(self):
-        hook = await self.__client.http_request(
-            "GET",
-            "groups.roblox.com",
-            "/v1/groups/{}/wall/posts?limit=10&sortOrder=Desc".format(self.__listening_to.id)
-            )
-        for msg in hook.json()['data']:
+        hook = await self.__access.get()
+        for msg in hook.json['data']:
             if self.__is_first:
                     self.__already_seen.append(msg["id"])
             if await self.check_entity(msg):
@@ -54,7 +54,7 @@ class Commander:
         except (TypeError, CustomEventException) as e:
             if await self.__client._emit("error", (ctx, e)):
                 return
-            raise MissingRequiredArgument(
+            raise BadArguments(
                 function_name
                 )
 
