@@ -2,7 +2,6 @@ README.md
 setup.py
 PyBlox2/Base.py
 PyBlox2/Client.py
-PyBlox2/Connect.py
 PyBlox2/Errors.py
 PyBlox2/Groups.py
 PyBlox2/Member.py
