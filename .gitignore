@@ -6,3 +6,5 @@
 /dist
 /env
 /tests/src/secret.py
+/tests/secret.py
+/live_tests.py
