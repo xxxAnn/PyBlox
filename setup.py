@@ -1,8 +1,13 @@
 import setuptools
+import re
 
+ex = re.compile("..version.. = \'(.*?)\'")
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
+with open("README.md", "r") as f:
+    long_description = f.read()
+
+with open("PyBlox2/__init__.py", "r") as f:
+    version = ex.findall(f.read())[0]
 
 requirements = []
 with open('requirements.txt') as f:
@@ -10,7 +15,7 @@ with open('requirements.txt') as f:
 
 setuptools.setup(
     name="PyBlox2",
-    version="v1.0.0-rc.1",
+    version=version,
     author="Kyando",
     author_email="amehikoji@gmail.com",
     description="Handler for the Roblox API",
