@@ -19,8 +19,7 @@ async def ready(payload):
     print(client.user.name)
     print(client.user.id)
     print("xx---xx")
-    user = await client.get_user(user_id=182262920)
-    assert user.name == "fego2015"
+    user = await client.get_user(182262920)
 
 @client.command
 async def ping(ctx, text):
