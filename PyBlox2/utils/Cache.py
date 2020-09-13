@@ -34,7 +34,7 @@ class Cache:
             attr = attr.replace("add_", "")
 
             def __wrap(k, v):
-                logger.debug("Adding an object of type {0} named {1} to the cache".format(attr, k))
+                logger.debug("Adding an object of type {0} identified by {1} to the cache".format(attr, k))
                 try:
                     getattr(self, attr)[k] = v
                 except:
