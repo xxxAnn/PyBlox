@@ -54,7 +54,6 @@ class BloxType():
             except AttributeError:
                 raise AttributeNotFetched(attr)
 
-
 class DataContainer():
     
     def __init__(self):
