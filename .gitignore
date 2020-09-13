@@ -4,5 +4,5 @@
 /secret.py
 /build/lib/PyBlox2
 /dist
-/PyBlox2.egg-info
 /env
+/tests/src/secret.py
