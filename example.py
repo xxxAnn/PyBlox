@@ -5,7 +5,7 @@ import PyBlox2
 from secret import ROBLOSECURITY
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s.%(msecs)03d %(levelname)s %(module)s.%(funcName)s: %(message)s'
     )
 client = PyBlox2.BloxClient(prefix="!")
