@@ -2,8 +2,8 @@
 /__pycache__
 *.pyc
 /secret.py
-/build/lib/PyBlox2
 /dist
+/build
 /env
 /tests/src/secret.py
 /tests/secret.py
