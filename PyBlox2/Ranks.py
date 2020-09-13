@@ -41,7 +41,7 @@ class BloxRank(BloxType):
 
     async def fetch_members(self):
         role_id = self.id
-        access = Url("groups", "/v1/groups/%group_id%/roles/%id%/users", guild_id=self.group.id, id=self.id)
+        access = Url("groups", "/v1/groups/%group_id%/roles/%id%/users", group_id=self.group.id, id=self.id)
         members_list = []
         hook = await access.get()
         iterable = hook.json["data"]
