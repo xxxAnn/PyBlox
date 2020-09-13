@@ -78,7 +78,7 @@ class BloxUser(BloxType):
     # end auto generated
 
     async def fetch_friends(self):
-        hook = await Url("friends", "/v1/block/users/%id%/friends", id=self.id).get()
+        hook = await Url("friends", "/v1/users/%id%/friends", id=self.id).get()
 
         data = hook.json
         friend_list = []
@@ -92,7 +92,12 @@ class BloxUser(BloxType):
 
         return friend_list
 
+    # Aliases
+
     @property
     def name(self):
         return self.username
+
+    async def add_friend(self, *args, **kwargs):
+        await self.request_friendship()
    
