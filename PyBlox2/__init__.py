@@ -1,6 +1,7 @@
 __title__ = 'PyBlox2'
 __author__ = 'Kyando'
 __license__ = 'MIT'
+__version__ = '1.0.0-rc.1'
 
 import logging
 
@@ -12,6 +13,5 @@ from .Member import BloxMember
 from .Ranks import BloxRank
 from .Settings import BloxSettings
 from .Base import BloxType
-from .Connect import connect
 
 logging.getLogger(__name__)
