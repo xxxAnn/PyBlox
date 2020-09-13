@@ -165,13 +165,31 @@ class BloxClient:
             self._friend_requests = list_members
             return list_members
 
-    async def get_user(self, username: str, user_id=None):
+    async def get_user(self, identifier, **kwargs): 
+        '''
+        Obtains a user by either their username or their id
+        
+        May throw an HTTP Errors
+        '''
+        is_int = True
+        try:
+            int(identifier)
+        except:
+            is_int = False
+
+        user_id = None
+        username = None
+
+        if is_int:
+            user_id = int(identifier)
+        else:
+            username = str(identifier)
 
         if user_id:
             access = Url("default", "/users/%id%", id=user_id)
             hook = await access.get()
             username = hook.json.get("Username")
-            return await self.get_user(username=username, user_id=None)
+            return await self.get_user(str(username))
 
         if self.__cache.get_user(username):
             return self.__cache.get_user(username)
@@ -179,7 +197,7 @@ class BloxClient:
         access = Url("default", "/users/get-by-username?username=%username%", username=username)
         hook = await access.get()
 
-        id = hook.json["Id"]
+        id = hook.json["Id"] 
         user = BloxUser(client=self, user_id=id, username=username)
         self.__cache.add_user(username, user)
         return user
