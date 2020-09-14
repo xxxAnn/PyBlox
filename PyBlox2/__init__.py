@@ -1,7 +1,7 @@
 __title__ = 'PyBlox2'
 __author__ = 'Kyando'
 __license__ = 'MIT'
-__version__ = '1.0.0rc2'
+__version__ = '1.0.0rc3'
 
 import logging
 
