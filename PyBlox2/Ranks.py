@@ -9,7 +9,7 @@ Requires:
     `Base`: `BloxType`
     `.utils`: `Url`
 
-The following code is provided with through the
+The following code is provided through 
 
     The MIT License (MIT)
 
