@@ -1,25 +1,37 @@
 """
-The MIT License (MIT)
+`Ranks` is a submodule of Groups it manages the `roleSet` within the groups API
 
-Copyright (c) Kyando 2020
+Contents:
+    `BloxRank`: `BloxType`
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Requires:
+    `Errors`: `Module.*`
+    `Base`: `BloxType`
+    `.utils`: `Url`
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The following code is provided with through the
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+    The MIT License (MIT)
+
+    Copyright (c) Kyando 2020
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
 """
 
 import json
@@ -29,6 +41,30 @@ from .Base import BloxType
 from .utils import Url
 
 class BloxRank(BloxType):
+    """
+    A rank object used to modify a user's rank 
+    or modify the name, rank or description of a rank
+
+    Attrs:
+        `name`
+        `id`
+        `rank`
+        `member_count`
+        `group`: BloxGroup
+        `description`
+    
+    Fetchables:
+        `members`: List(Member.BloxMember)
+
+    Meths:
+        async `fetch`: 
+    
+    Examples:
+
+        >> developers = await rank.fetch("members") # where `rank` is a group's developer rank
+
+    Users *will* be fetched through cache when using async meth `fetch`
+    """
     def __init__(self, payload, group):
         super().__init__()
         self.name = payload.pop("name")
