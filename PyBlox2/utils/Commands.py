@@ -48,6 +48,7 @@ class Commander:
     async def start_loop(self):
         await self.__client._emit("start_listening", (self.__listening_to,))
         while True:
+            await self.__client._emit("check_messages", (self.__listening_to,))
             await self.check_messages()
             await asyncio.sleep(5)
 
