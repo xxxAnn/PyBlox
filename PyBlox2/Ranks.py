@@ -30,7 +30,7 @@ from .utils import Url
 
 class BloxRank(BloxType):
     def __init__(self, payload, group):
-        super().__init__()
+        super().__init__(group.client)
         self.name = payload.pop("name")
         self.id = payload.pop("id")
         self.rank = payload.pop("rank")
