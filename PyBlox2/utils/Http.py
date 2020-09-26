@@ -61,7 +61,7 @@ class HttpClient:
 
     async def connect(self, roblosecurity):
         self.__set_cookie(".ROBLOSECURITY", roblosecurity, None)
-        self.__session = aiohttp.ClientSession(loop=self.__loop)
+        self.__session = aiohttp.ClientSession()
         user = await self.__complete_login(self.__headers.copy())
 
         self.__authed = True
@@ -83,45 +83,40 @@ class HttpClient:
         return [resp.get("UserId"), resp.get("Name")]
 
     async def __raw_request(self, method, url, data=None, headers=None) -> BloxResponse:
-        logger.debug("Requesting url {}".format(url))
+        token = "None"
+        if headers:
+            if headers.get("X-CSRF-TOKEN", False):
+                token = headers.get("X-CSRF-TOKEN", False)
+        logger.debug("Requesting url {} with token {}".format(url, token))
         try:
             async with self.__session.request(method=method, url=url, data=data, headers=headers) as resp:
                 text = await resp.text()
                 return BloxResponse(status=resp.status, text=text, headers=resp.headers)
         except Exception as e:
-            print(e)
+            raise
 
     async def request(self, method, url, data=None, headers=None, retries=0):
         if not headers:
             headers = self.__headers
-
-        if method == "GET":
-            headers["content-type"] = "application/json"
-
-        response = await self.__raw_request(method, url, data, headers)
-
-        if not response.status == 200:
-            if not retries>0:
-                logger.debug("Attempting to actualize X-CSRF token after receiving an error")
-                await self.__actualize_token()
-                await self.request(method, url, data, headers, retries=retries+1)
-            HttpError.error(response.status)
-        else:
-            return response
-
-    async def __actualize_token(self):
-        logger.warning("X-CSRF Token is invalid, updating...")
-        response = await self.__raw_request(method='GET', url='https://www.roblox.com/')
+        response = await self.__raw_request(method='GET', url='https://www.roblox.com/home', headers=headers)
             
         token = re.findall(
             csrfTokenRegex,
             response.text
         )
 
-        if len(token) > 0:
-            if self.__headers.get("X-CSRF-TOKEN", None) != token[0]:
-                logger.info(" Updated X-CSRF-TOKEN " + token[0] + " <")
-                self.__set_header("X-CSRF-TOKEN", token[0])
+        self.__headers["X-CSRF-TOKEN"] = token[0]
+
+        if method == "GET":
+            headers["content-type"] = "application/json"
+        response = await self.__raw_request(method, url, data, headers)
+
+        if not response.status == 200:
+            if not retries>0:
+                await self.request(method, url, data, retries=retries+1)
+            HttpError.error(response)
+        else:
+            return response
 
     # Helper
     def __set_header(self, key, value):
