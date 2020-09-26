@@ -83,8 +83,11 @@ class BloxClient:
         except Exception:
             pass
         finally:
-            if runner.exception():
-                raise runner.exception()
+            try:
+               if runner.exception():
+                    raise runner.exception()
+            except asyncio.exceptions.InvalidStateError:
+                pass
             runner.remove_done_callback(kill_loop)
 
     async def quit(self):
