@@ -25,7 +25,7 @@ SOFTWARE.
 from .User import BloxUser
 from .Ranks import BloxRank
 from .utils import Url
-
+from .Errors import *
 
 class BloxMember(BloxUser):
 
@@ -39,7 +39,11 @@ class BloxMember(BloxUser):
         Changes the user's role in the group
         '''
         payload = "{\"roleId\":" + str(role.id) + "}"
-        await self.__access.patch(payload)
+        try:
+            await self.__access.patch(payload)
+        except UnknownClientError as e:
+            if e.data.json['errors'][0]['code'] == 3:
+                raise NilInstance
     
     async def kick(self):
         '''

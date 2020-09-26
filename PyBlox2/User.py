@@ -52,28 +52,64 @@ class BloxUser(BloxType):
     # start auto generated
 
     async def accept_friend_request(self):
-        hook = await Url("default", "/user/accept-friend-request?requesterUserId=%id%", id=self.id).post()
+        try:
+            hook = await Url("friends", "/v1/users/%id%/accept-friend-request", id=self.id).post()
+        except Forbidden:
+            raise UserBlocked
+        except UnknownClientError:
+            logger.debug(UnknownClientError.data.text)
+            raise NilInstance
 
     async def decline_friend_request(self):
-        hook = await Url("default", "/user/decline-friend-request?requesterUserId=%id%", id=self.id).post()
+        try:
+            hook = await Url("friends", "/v1/users/%id%/decline-friend-request", id=self.id).post()
+        except UnknownClientError:
+            logger.debug(UnknownClientError.data.text)
+            raise NilInstance
 
     async def request_friendship(self):
-        hook = await Url("default", "/user/request-friendship?recipientUserId=%id%", id=self.id).post()
+        try: 
+            hook = await Url("default", "/user/request-friendship?recipientUserId=%id%", id=self.id).post()
+        except UnknownClientError:
+            logger.debug(UnknownClientError.data.text)
+            raise NilInstance
 
     async def unfriend(self):
-        hook = await Url("default", "/user/unfriend?friendUserId=%id%", id=self.id).post()
+        try:
+            hook = await Url("friends", "/v1/users/%id%/unfriend", id=self.id).post()
+        except UnknownClientError:
+            logger.debug(UnknownClientError.data.text)
+            raise NilInstance
 
     async def follow(self):
-        hook = await Url("default", "/user/follow?followedUserId=%id%", id=self.id).post()
+        try:
+            hook = await Url("friends", "/v1/users/%id%/follow", id=self.id).post()
+        except UnknownClientError:
+            logger.debug(UnknownClientError.data.text)
+            raise NilInstance
+        except Forbidden:
+            raise UserBlocked
 
     async def unfollow(self):
-        hook = await Url("default", "/user/unfollow?followedUserId=%id%", id=self.id).post()
+        try:
+            hook = await Url("default", "/user/unfollow?followedUserId=%id%", id=self.id).post()
+        except UnknownClientError:
+            logger.debug(UnknownClientError.data.text)
+            raise NilInstance
     
     async def block(self):
-        hook = await Url("default", "/userblock/block?userId=%id%", id=self.id).post()
+        try:
+            hook = await Url("default", "/userblock/block?userId=%id%", id=self.id).post()
+        except UnknownClientError:
+            logger.debug(UnknownClientError.data.text)
+            raise NilInstance
 
     async def unblock(self):
-        hook = await Url("default", "/userblock/unblock?userId=%id%", id=self.id).post()
+        try:
+            hook = await Url("default", "/userblock/unblock?userId=%id%", id=self.id).post()
+        except UnknownClientError:
+            logger.debug(UnknownClientError.data.text)
+            raise NilInstance
 
     # end auto generated
 

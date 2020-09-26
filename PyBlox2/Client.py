@@ -80,9 +80,17 @@ class BloxClient:
             loop.run_forever()
         except KeyboardInterrupt:
             pass
+        except Exception:
+            pass
         finally:
+            if runner.exception():
+                raise runner.exception()
             runner.remove_done_callback(kill_loop)
-    
+
+    async def quit(self):
+        await self.__http.close()
+        self.loop.stop()
+
     def event(self, coro):
         '''
         Registers an event
