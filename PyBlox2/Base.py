@@ -1,45 +1,84 @@
 """
-The MIT License (MIT)
+`Base` is the main module for Data Containers and objects that manage ineractions with the API
 
-Copyright (c) Kyando 2020
+Contents:
+    `BloxType`: No parents
+    `DataContainer`: No parents
+    `Emitter`: `DataContainer`
+    `CommandEmitter`: `Emitter`
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Requires:
+    `Errors`: `AttributeNotFetched`
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The following code is provided with: 
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+    The MIT License (MIT)
+
+    Copyright (c) Kyando 2020
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
 """
 
 from .Errors import AttributeNotFetched
 
 class BloxType():
     '''
-    The base class for most items
+    The base class for most high level items.
+
+    Can be fetched and has fetchables
+
+    ```
+        class MyCustomBloxType(BloxType):
+
+            def __init__(self):
+                self.can_fetch("money")
+
+            def fetch_money(self):
+                # Send a request to the API and get the amount of money
+                return 200 # For the sake of this example, let's say it's 200
+
+        # In an async context
+        MyCustomInstance = MyCustomBloxType()
+
+        MyCustomInstance.money
+        >> AttributeNotFetched: Attribute 'money' was accessed before being fetched
+        await MyCustomInstance.fetch("money")
+        >> 200
+        MyCustomInstance.money
+        >> 200
+    ```
+
+    Will raise "NotImplementedError" if the fetch_{attr} where {attr} is the name of the attribute, function doesn't exist.
+   
     '''
     def __init__(self, client):
         self.client = client
-        self.__fetchable = []
+        self.fetchable = []
 
     async def fetch(self, attr: str):
-        if attr in self.__fetchable:
+        if attr in self.fetchable:
             resp = await self._fetcher(attr)
             setattr(self, "_"+attr, resp)
             return resp
 
     def can_fetch(self, *data):
-        self.__fetchable.extend(data)
+        self.fetchable.extend(data)
 
     async def _fetcher(self, attr):
         coro = getattr(self, "fetch_"+attr) 
@@ -48,14 +87,19 @@ class BloxType():
         return await coro()
     
     def __getattr__(self, attr):
-        if attr in self.__fetchable:
+        fetchables = self.fetchable
+        if attr in fetchables:
             try:
                 return getattr(self, "_"+attr)
             except AttributeError:
                 raise AttributeNotFetched(attr)
 
 class DataContainer():
-    
+    """
+    Abstract class with a __dict__ and a __data, abstracting the __dict__ and only showing __data
+
+    This can be used to make it still have some hidden values while only showing the __data containing the abstract information
+    """
     def __init__(self):
         self.__data = {}
 
@@ -74,7 +118,9 @@ class DataContainer():
 
 
 class Emitter(DataContainer):
-
+    """
+    A DataContainer storing coros in its __data and firing them when necessary with a given playload
+    """
     def __init__(self):
        super().__init__()
 
@@ -86,7 +132,9 @@ class Emitter(DataContainer):
         return False
 
 class CommandEmitter(Emitter):
-
+    """
+    A modified Emitter which fires the coros with a ctx argument and an args argument
+    """
     def __init__(self):
        super().__init__()
 
