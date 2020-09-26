@@ -47,6 +47,7 @@ class BloxType():
         class MyCustomBloxType(BloxType):
 
             def __init__(self):
+                self.fetchable = []
                 self.can_fetch("money")
 
             def fetch_money(self):
