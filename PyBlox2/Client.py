@@ -176,18 +176,13 @@ class BloxClient:
 
             access = Url("friends", "/v1/my/friends/requests?sortOrder=Asc&limit=100")
 
-            def create_user(list):
+            def create_user(raw_data):
 
-                result_list = []
-
-                for user_dict in list:
-                    result_list.append(BloxUser(client=self, user_id=str(user_dict.get("id")), username=user_dict.get("name")))
-
-                return result_list
+                return [BloxUser(client=self, user_id=str(user_dict.get("id")), username=user_dict.get("name")) for user_dict in raw_data.get("data")]
 
             list_members = await read_pages(access, create_user)
 
-            self._friend_requests = list_members
+            self.__friend_requests = list_members
             return list_members
 
     async def get_user(self, identifier, **kwargs): 
@@ -247,8 +242,8 @@ class BloxClient:
 
     @property
     def friend_requests(self):
-        if hasattr(self, '_friend_requests'):
-            return self._friend_requests
+        if hasattr(self, '__friend_requests'):
+            return self.__friend_requests
         else:
             raise AttributeNotFetched(
                 "friend_requests"
