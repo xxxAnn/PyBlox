@@ -1,25 +1,36 @@
 """
-The MIT License (MIT)
+The most important module and the core of the library, the `Http` utility
 
-Copyright (c) Kyando 2020
+Contents:
+    `HttpClient`: No parents
+    `Url`: No parents
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Requires:
+    N/A
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The following code is provided with: 
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+    The MIT License (MIT)
+
+    Copyright (c) Kyando 2020
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
 """
 
 import logging
@@ -43,6 +54,18 @@ ENDPOINTS = {
 }
 
 class HttpClient:
+    """
+    Manages low level interactions with the API
+
+    Attrs:
+        N/A
+
+    Meths:
+        `request` -> Should usually not be used
+        `connect` -> Should usually not be used
+
+    This is a low level object and in most cases shouldn't be interacted with outside the library
+    """
     __instance = None
 
     @staticmethod
@@ -60,6 +83,9 @@ class HttpClient:
         await self.__session.close()
 
     async def connect(self, roblosecurity):
+        """
+        Prepares the cookie and returns the user logged in as
+        """
         self.__set_cookie(".ROBLOSECURITY", roblosecurity, None)
         self.__session = aiohttp.ClientSession()
         user = await self.__complete_login(self.__headers.copy())
@@ -69,7 +95,6 @@ class HttpClient:
         return user
 
     async def __complete_login(self, headers):
-
         logger.info("Validating Auth")
 
         try:
@@ -96,6 +121,11 @@ class HttpClient:
             raise
 
     async def request(self, method, url, data=None, headers=None, retries=0):
+        """
+        Requesting to the API, returns a BloxResponse or raises an HttpError
+
+        Retries 1 time
+        """
         if not headers:
             headers = self.__headers
         response = await self.__raw_request(method='GET', url='https://www.roblox.com/home', headers=headers)
@@ -137,7 +167,16 @@ class HttpClient:
 
 
 class Url:
+    """
+    Aesthetic way of making requests to the API
 
+    Attrs:
+        `url`
+
+    Meths:
+        `extend` -> Experimental
+        `get`; `put`; `post`; `patch`; `delete`; -> http request methods
+    """
     def __init__(self, endpoint: str, url: str, **params):
         self.__fullurl = endpoint + url
         self.__unparsedparams = params
@@ -155,17 +194,19 @@ class Url:
         return self.__url
 
     def extend(self, extension_url, **params):
-        '''
+        """
         For example:
             url = Url("friends", "/v1/users/%user_id%/friends", user_id=...)
             url.extend("/count")
+
         (Note: this is purely experimental)
-        '''
+        """
         url = self.__fullurl + extension_url
         fullparams = self.__unparsedparams.extend(params)
         return Url("", url, **fullparams)
 
-    ''' HTTP methods '''
+    # HTTP methods 
+    
     async def get(self, data=None, headers=None):
         return await self.__http.request("GET", self.__url, data, headers)
 

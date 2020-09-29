@@ -47,7 +47,16 @@ class BloxMember(BloxUser):
 
     Attrs:
         `id`
-        `name`
+        `username` | `name`
+
+    Fetchable:
+        `friends`
+
+    Meths:
+        async `fetch`:
+            >> my_friends = await client.user.fetch("friends") # where `client` is the BloxClient
+
+    Fetched user *will* be added to cache when using async meth `fetch`
     """
     def __init__(self, client, user_id: str, username: str, group):
         super().__init__(client=client, user_id=user_id, username=username)
