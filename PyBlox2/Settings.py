@@ -56,7 +56,7 @@ class BloxSettings:
         self.are_group_games_visible = __cool_pop(payload, "areGroupGamesVisible")
         self.are_group_funds_visible = __cool_pop(payload, "areGroupFundsVisible")
 
-def create_settings(payload)
+def create_settings(payload):
     """
     Used in 1.1+ to create a settings DataContainer
     """
