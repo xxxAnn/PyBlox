@@ -1,25 +1,37 @@
 """
-The MIT License (MIT)
+`User` module is a module managing the interactions with players
 
-Copyright (c) Kyando 2020
+Contents:
+    `BloxUser`: `BloxType`
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Requires:
+    `Errors`: `*`
+    `Base`: `BloxType`
+    `.utils`: `Url`
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+The following code is provided with 
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+    The MIT License (MIT)
+
+    Copyright (c) Kyando 2020
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
 """
 
 import json
@@ -31,6 +43,19 @@ from .utils import Url
 class BloxUser(BloxType):
     '''
     A handler for a roblox user
+
+    Attrs:
+        `id`
+        `username` | `name`
+
+    Fetchables:
+        `friends`
+
+    Meths:
+        async `fetch`:
+            >> my_friends = await client.user.fetch("friends") # where `client` is the BloxClient
+
+    Fetched user *will* be added to cache when using async meth `fetch`
     '''
     def __init__(self, client, user_id, username):
         super().__init__(client)
@@ -68,6 +93,9 @@ class BloxUser(BloxType):
             raise NilInstance
 
     async def request_friendship(self):
+        """
+        Will be deprecated in 1.1 in favor of add_friend
+        """
         try: 
             hook = await Url("default", "/user/request-friendship?recipientUserId=%id%", id=self.id).post()
         except UnknownClientError:
@@ -92,11 +120,12 @@ class BloxUser(BloxType):
 
     async def unfollow(self):
         try:
-            hook = await Url("default", "/user/unfollow?followedUserId=%id%", id=self.id).post()
+            hook = await Url("friends", "/v1/users/%id%/unfollow", id=self.id).post()
         except UnknownClientError:
             logger.debug(UnknownClientError.data.text)
             raise NilInstance
     
+    # TODO: replace with the friends subAPI
     async def block(self):
         try:
             hook = await Url("default", "/userblock/block?userId=%id%", id=self.id).post()

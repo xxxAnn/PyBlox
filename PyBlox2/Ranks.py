@@ -5,11 +5,11 @@ Contents:
     `BloxRank`: `BloxType`
 
 Requires:
-    `Errors`: `Module.*`
+    `Errors`: `*`
     `Base`: `BloxType`
     `.utils`: `Url`
 
-The following code is provided through 
+The following code is provided with 
 
     The MIT License (MIT)
 
@@ -57,13 +57,10 @@ class BloxRank(BloxType):
         `members`: List(Member.BloxMember)
 
     Meths:
-        async `fetch`: 
-    
-    Examples:
+        async `fetch`:
+            >> developers = await rank.fetch("members") # where `rank` is a group's developer rank
 
-        >> developers = await rank.fetch("members") # where `rank` is a group's developer rank
-
-    Users *will* be fetched through cache when using async meth `fetch`
+    Fetched user *will* be added to cache when using async meth `fetch`
     """
     def __init__(self, payload, group):
         super().__init__(group.client)
