@@ -35,7 +35,7 @@ The following code is provided with
 import json
 
 class BloxResponse:
-    '''
+    """
     A response from the Roblox API
 
     Attrs:
@@ -43,7 +43,7 @@ class BloxResponse:
         `text`
         `headers` -> May or may not exist
         `json`
-    '''
+    """
     def __init__(self, status, text: str, headers=None):
         self.status = status
         self.text = text
