@@ -16,7 +16,7 @@ client = PyBlox2.BloxClient(prefix="!")
 @client.event
 async def ready(payload):
     assert payload == "I'm ready"
-    user = await client.get_user("fego2015")
-    await user.request_friendship()
+    friend_requests = await client.fetch("friend_requests")
+    await friend_requests[1].accept_friend_request() # Accept a friend request
 
 client.run(ROBLOSECURITY)
