@@ -2,9 +2,9 @@
 /__pycache__
 *.pyc
 /secret.py
-/build/lib/PyBlox2
 /dist
-/PyBlox2.egg-info
-/Examples/Example01/secret.py
-/setup.py
-/Example/secret.py
+/build
+/env
+/tests/src/secret.py
+/tests/secret.py
+/live_tests.py
