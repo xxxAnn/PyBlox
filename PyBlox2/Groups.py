@@ -11,7 +11,7 @@ Requires:
     `Ranks`: `BloxRank`
     `Settings`: `BloxSettings`
     `Member`: `BloxMember`
-    `.utils`: `Url`, `read_pages`
+    `.utils`: `Url`
 
 The following code is provided with: 
 
@@ -47,7 +47,7 @@ from .User import BloxUser
 from .Ranks import BloxRank
 from .Settings import BloxSettings
 from .Member import BloxMember
-from .utils import Url, read_pages
+from .utils import Url
 
 
 class BloxGroup(BloxType):
@@ -74,7 +74,7 @@ class BloxGroup(BloxType):
         super().__init__(client)
         self.id = str(group_id)
         self.roles = roles
-        self.can_fetch("join_requests", "members", "name", "settings")
+        self.can_fetch("join_requests", "members", "name")
 
     def __str__(self):
         if self.name:
@@ -93,7 +93,6 @@ class BloxGroup(BloxType):
 
         return name
 
-    # TODO: find a better way to do this (see BloxRank)
     async def _cvrt_dict_blox_member(self, list):
         real_list = []
         for user_dict in list:
@@ -122,35 +121,83 @@ class BloxGroup(BloxType):
         """
         Returns a list of all the group's members
         """
+        list_members = []
 
         access = Url("groups", "/v1/groups/%id%/users?sortOrder=Asc&limit=100", id=self.id)
 
-        def create_members(raw_data):
-            return [BloxMember(client=self.client, user_id=str(user_dict.get("userId")), username=user_dict.get("username"), group=self) for user_dict in raw_data.get("data")]
+        hook = await access.get()
 
-        list_members = await read_pages(access, create_members)
+        def create_members(group, list):
+
+            result_list = []
+
+            for user_info_dict in list:
+                user_dict = user_info_dict.get("user")
+                result_list.append(BloxMember(client=self.client, user_id=str(user_dict.get("userId")), username=user_dict.get("username"), group=group))
+
+            return result_list
+
+        data = hook.json
+        list_members.extend(create_members(self, data.get("data")))
+
+        done = False
+
+        next_page = data.get("nextPageCursor")
+        
+        while not done:
+
+            if not isinstance(next_page, str):
+                done = True
+                continue
+
+            data = await access.get()
+            data = data.json
+            next_page = data.get("nextPageCursor")
+            list_members.extend(create_members(self, data.get("data")))
         
         return list_members
 
     async def fetch_join_requests(self):
         """
         Returns a list of users that request to join the group
-
-        Fetches settings
         """
-        await self.fetch("settings")
-
         if not self.settings.is_approval_required:
             raise PyBloxException(
                 "This group isn't approval required and has no join requests"
                 )
 
-        access = Url("groups", "/v1/groups/%id%/join-requests?sortOrder=Asc&limit=100", id=self.id)
+        list_members = []
 
-        def create_users(raw_data):
-            return [BloxUser(client=self.client, user_id=str(user_dict['user'].get("userId")), username=user_dict['user'].get("username")) for user_dict in raw_data.get("data")]
+        access = Url("groups", "/v1/groups/%id%/users?sortOrder=Asc&limit=100", id=self.id)
 
-        list_members = await read_pages(access, create_users)
+        def create_users(list):
+
+            result_list = []
+
+            for user_info_dict in list:
+                user_dict = user_info_dict.get("requester")
+                result_list.append(BloxUser(client=self.client, user_id=str(user_dict.get("userId")), username=user_dict.get("username")))
+
+            return result_list
+
+        data = await access.get()
+        data = data.json
+        list_members.extend(create_users(data.get("data")))
+
+        done = False
+
+        next_page = data.get("nextPageCursor")
+        
+        while not done:
+
+            if not isinstance(next_page, str):
+                done = True
+                continue
+
+            data = await access.get()
+            data = data.json
+            next_page = data.get("nextPageCursor")
+            list_members.extend(create_users(data.get("data")))
 
         return list_members
 
@@ -158,7 +205,7 @@ class BloxGroup(BloxType):
         """
         Returns a `BloxSetting` object
         """
-        access = Url("groups", "/v1/groups/%id%/settings", id=self.id)
+        access = Url("groups", "v1/groups/%id%/settings", id=self.id)
         data = await access.get()
         data = data.json
 
