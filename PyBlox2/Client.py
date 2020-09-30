@@ -192,6 +192,7 @@ class BloxClient:
         This function checks cache
         """
         is_int = True
+
         try:
             int(identifier)
         except:
@@ -209,18 +210,20 @@ class BloxClient:
             access = Url("default", "/users/%id%", id=user_id)
             hook = await access.get()
             username = hook.json.get("Username")
-            return await self.get_user(str(username))
+            user = BloxUser(client=self, user_id=user_id, username=username)
+            self.__cache.add_user(username, user)
+            return user
 
         if self.__cache.get_user(username):
             return self.__cache.get_user(username)
 
-        access = Url("default", "/users/get-by-username?username=%username%", username=username)
-        hook = await access.get()
-
-        id = hook.json["Id"] 
-        user = BloxUser(client=self, user_id=id, username=username)
-        self.__cache.add_user(username, user)
-        return user
+        if username:
+            access = Url("default", "/users/get-by-username?username=%username%", username=username)
+            hook = await access.get()
+            id = hook.json["Id"] 
+            user = BloxUser(client=self, user_id=id, username=username)
+            self.__cache.add_user(username, user)
+            return user
 
     async def get_group(self, group_id: str):
         """
@@ -231,7 +234,6 @@ class BloxClient:
         if self.__cache.get_group(str(group_id)):
             return self.__cache.get_group(str(group_id))
 
-        # Confirming the group actually exists
         access = Url("groups", "/v1/groups/%group_id%/roles", group_id=group_id) 
         hook = await access.get()
 
