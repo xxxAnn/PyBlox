@@ -1,0 +1,234 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyBlox2.User &#8212; PyBlox2  documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for PyBlox2.User</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">.Errors</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.Base</span> <span class="kn">import</span> <span class="n">BloxType</span>
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">Url</span>
+
+<div class="viewcode-block" id="BloxUser"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser">[docs]</a><span class="k">class</span> <span class="nc">BloxUser</span><span class="p">(</span><span class="n">BloxType</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    A handler for a roblox user</span>
+
+<span class="sd">    Attrs:</span>
+<span class="sd">        `id`</span>
+<span class="sd">        `username` | `name`</span>
+
+<span class="sd">    Fetchables:</span>
+<span class="sd">        `friends`</span>
+
+<span class="sd">    Meths:</span>
+<span class="sd">        async `fetch`:</span>
+<span class="sd">            &gt;&gt; my_friends = await client.user.fetch(&quot;friends&quot;) # where `client` is the BloxClient</span>
+
+<span class="sd">    Fetched user *will* be added to cache when using async meth `fetch`</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">can_fetch</span><span class="p">(</span><span class="s2">&quot;friends&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">_dict</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span><span class="p">,</span>
+            <span class="s2">&quot;user_id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
+            <span class="p">}</span>
+
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">_dict</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span>
+    
+    <span class="c1"># start auto generated</span>
+
+<div class="viewcode-block" id="BloxUser.accept_friend_request"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser.accept_friend_request">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">accept_friend_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">hook</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Url</span><span class="p">(</span><span class="s2">&quot;friends&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/users/</span><span class="si">%i</span><span class="s2">d%/accept-friend-request&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">Forbidden</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UserBlocked</span>
+        <span class="k">except</span> <span class="n">UnknownClientError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">UnknownClientError</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NilInstance</span></div>
+
+<div class="viewcode-block" id="BloxUser.decline_friend_request"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser.decline_friend_request">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">decline_friend_request</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">hook</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Url</span><span class="p">(</span><span class="s2">&quot;friends&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/users/</span><span class="si">%i</span><span class="s2">d%/decline-friend-request&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">UnknownClientError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">UnknownClientError</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NilInstance</span></div>
+
+<div class="viewcode-block" id="BloxUser.request_friendship"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser.request_friendship">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">request_friendship</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Will be deprecated in 1.1 in favor of add_friend</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span> 
+            <span class="n">hook</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Url</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;/user/request-friendship?recipientUserId=</span><span class="si">%i</span><span class="s2">d%&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">UnknownClientError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">UnknownClientError</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NilInstance</span></div>
+
+<div class="viewcode-block" id="BloxUser.unfriend"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser.unfriend">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">unfriend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">hook</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Url</span><span class="p">(</span><span class="s2">&quot;friends&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/users/</span><span class="si">%i</span><span class="s2">d%/unfriend&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">UnknownClientError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">UnknownClientError</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NilInstance</span></div>
+
+<div class="viewcode-block" id="BloxUser.follow"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser.follow">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">follow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">hook</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Url</span><span class="p">(</span><span class="s2">&quot;friends&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/users/</span><span class="si">%i</span><span class="s2">d%/follow&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">UnknownClientError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">UnknownClientError</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NilInstance</span>
+        <span class="k">except</span> <span class="n">Forbidden</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UserBlocked</span></div>
+
+<div class="viewcode-block" id="BloxUser.unfollow"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser.unfollow">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">unfollow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">hook</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Url</span><span class="p">(</span><span class="s2">&quot;friends&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/users/</span><span class="si">%i</span><span class="s2">d%/unfollow&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">UnknownClientError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">UnknownClientError</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NilInstance</span></div>
+    
+    <span class="c1"># TODO: replace with the friends subAPI</span>
+<div class="viewcode-block" id="BloxUser.block"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser.block">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">block</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">hook</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Url</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;/userblock/block?userId=</span><span class="si">%i</span><span class="s2">d%&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">UnknownClientError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">UnknownClientError</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NilInstance</span></div>
+
+<div class="viewcode-block" id="BloxUser.unblock"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser.unblock">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">unblock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">hook</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Url</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;/userblock/unblock?userId=</span><span class="si">%i</span><span class="s2">d%&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">UnknownClientError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">UnknownClientError</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">NilInstance</span></div>
+
+    <span class="c1"># end auto generated</span>
+
+<div class="viewcode-block" id="BloxUser.fetch_friends"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser.fetch_friends">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_friends</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">hook</span> <span class="o">=</span> <span class="k">await</span> <span class="n">Url</span><span class="p">(</span><span class="s2">&quot;friends&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/users/</span><span class="si">%i</span><span class="s2">d%/friends&quot;</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">hook</span><span class="o">.</span><span class="n">json</span>
+        <span class="n">friend_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">user_dict</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">):</span>
+            <span class="n">friend_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BloxUser</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">,</span> <span class="n">user_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">user_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)),</span> <span class="n">username</span><span class="o">=</span><span class="n">user_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)))</span>
+        
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">friend_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PyBloxException</span><span class="p">(</span>
+                <span class="s2">&quot;User has no friends&quot;</span>
+                <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">friend_list</span></div>
+
+    <span class="c1"># Aliases</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">username</span>
+
+<div class="viewcode-block" id="BloxUser.add_friend"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.User.BloxUser.add_friend">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">add_friend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_friendship</span><span class="p">()</span></div></div>
+   
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">PyBlox2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../PyBlox2.html">PyBlox2 package</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

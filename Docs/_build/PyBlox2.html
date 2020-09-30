@@ -1,0 +1,720 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PyBlox2 package &#8212; PyBlox2  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="PyBlox2.utils package" href="PyBlox2.utils.html" />
+    <link rel="prev" title="Welcome to PyBlox2’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="pyblox2-package">
+<h1>PyBlox2 package<a class="headerlink" href="#pyblox2-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="PyBlox2.utils.html">PyBlox2.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="PyBlox2.utils.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyBlox2.utils.html#module-PyBlox2.utils.Cache">PyBlox2.utils.Cache module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyBlox2.utils.html#module-PyBlox2.utils.Commands">PyBlox2.utils.Commands module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyBlox2.utils.html#module-PyBlox2.utils.Http">PyBlox2.utils.Http module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyBlox2.utils.html#module-PyBlox2.utils.Misc">PyBlox2.utils.Misc module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="PyBlox2.utils.html#module-PyBlox2.utils">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-PyBlox2.Base">
+<span id="pyblox2-base-module"></span><h2>PyBlox2.Base module<a class="headerlink" href="#module-PyBlox2.Base" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="PyBlox2.Base.BloxType">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.Base.</code><code class="sig-name descname">BloxType</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Base.html#BloxType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.BloxType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handler for the fetching feature.</p>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyCustomBloxType</span><span class="p">(</span><span class="n">BloxType</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fetchable</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">can_fetch</span><span class="p">(</span><span class="s2">&quot;money&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fetch_money</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Send a request to the API and get the amount of money</span>
+        <span class="k">return</span> <span class="mi">200</span> <span class="c1"># For the sake of this example, let&#39;s say it&#39;s 200</span>
+
+<span class="c1"># In an async context</span>
+<span class="n">MyCustomInstance</span> <span class="o">=</span> <span class="n">MyCustomBloxType</span><span class="p">()</span>
+
+<span class="n">MyCustomInstance</span><span class="o">.</span><span class="n">money</span>
+<span class="o">&gt;&gt;</span> <span class="n">AttributeNotFetched</span><span class="p">:</span> <span class="n">Attribute</span> <span class="s1">&#39;money&#39;</span> <span class="n">was</span> <span class="n">accessed</span> <span class="n">before</span> <span class="n">being</span> <span class="n">fetched</span>
+<span class="k">await</span> <span class="n">MyCustomInstance</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s2">&quot;money&quot;</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="mi">200</span>
+<span class="n">MyCustomInstance</span><span class="o">.</span><span class="n">money</span>
+<span class="o">&gt;&gt;</span> <span class="mi">200</span>
+</pre></div>
+</div>
+<dl class="simple">
+<dt>client: <code class="xref py py-class docutils literal notranslate"><span class="pre">BloxClient</span></code></dt><dd><p>The BloxClient this object is attached to.</p>
+</dd>
+<dt>fetchable: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></dt><dd><p>List of fetchable attributes.</p>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Will raise <cite>NotImplementedError</cite> the if fetch_{attr}, where {attr} is the name of the attribute, meth doesn’t exist.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This class shouldn’t be used alone, it exists to only to be subclassed.</p>
+</div>
+<dl class="py method">
+<dt id="PyBlox2.Base.BloxType.can_fetch">
+<code class="sig-name descname">can_fetch</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Base.html#BloxType.can_fetch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.BloxType.can_fetch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extends the <cite>fetchable</cite> list with the list of attributes providen</p>
+<dl class="simple">
+<dt>*attrs: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>List of attribute names that can be fetched</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Base.BloxType.fetch">
+<em class="property">async </em><code class="sig-name descname">fetch</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">attrs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Base.html#BloxType.fetch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.BloxType.fetch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fetches an attribute by calling <code class="xref py py-func docutils literal notranslate"><span class="pre">BloxType._fetcher()</span></code></p>
+<dl class="simple">
+<dt>*attrs: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>List of attribute names to fetch</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="PyBlox2.Base.CommandEmitter">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.Base.</code><code class="sig-name descname">CommandEmitter</code><a class="reference internal" href="_modules/PyBlox2/Base.html#CommandEmitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.CommandEmitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Base.Emitter" title="PyBlox2.Base.Emitter"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Base.Emitter</span></code></a></p>
+<p>A modified Emitter which fires the coros with a ctx argument and an args argument</p>
+<dl class="py method">
+<dt id="PyBlox2.Base.CommandEmitter.fire">
+<em class="property">async </em><code class="sig-name descname">fire</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Base.html#CommandEmitter.fire"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.CommandEmitter.fire" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches for a coro with the <cite>name</cite> and fires it with the given <cite>payload</cite></p>
+<p>Returns true if the coro is found and false otherwise</p>
+<dl class="simple">
+<dt>name: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Name identifying the coro</p>
+</dd>
+<dt>payload: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code> </dt><dd><p>Payload to be fired with the event</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="PyBlox2.Base.DataContainer">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.Base.</code><code class="sig-name descname">DataContainer</code><a class="reference internal" href="_modules/PyBlox2/Base.html#DataContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.DataContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract class emulating a dict type by using a hidden __data value
+This class still allows access through the object.attribute notation</p>
+<dl class="py method">
+<dt id="PyBlox2.Base.DataContainer.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Base.html#DataContainer.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.DataContainer.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="xref py py-func docutils literal notranslate"><span class="pre">__data.__setitem__()</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Base.DataContainer.find">
+<code class="sig-name descname">find</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Base.html#DataContainer.find"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.DataContainer.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="xref py py-func docutils literal notranslate"><span class="pre">__data.__getitem__()</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Base.DataContainer.is_empty">
+<code class="sig-name descname">is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Base.html#DataContainer.is_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.DataContainer.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <code class="xref py py-func docutils literal notranslate"><span class="pre">__data.__bool__()</span></code></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="PyBlox2.Base.Emitter">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.Base.</code><code class="sig-name descname">Emitter</code><a class="reference internal" href="_modules/PyBlox2/Base.html#Emitter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.Emitter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Base.DataContainer" title="PyBlox2.Base.DataContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Base.DataContainer</span></code></a></p>
+<p>A DataContainer storing coros in its __data and firing them when necessary with a given playload</p>
+<dl class="py method">
+<dt id="PyBlox2.Base.Emitter.fire">
+<em class="property">async </em><code class="sig-name descname">fire</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">payload</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Base.html#Emitter.fire"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Base.Emitter.fire" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches for a coro with the <cite>name</cite> and fires it with the given <cite>payload</cite></p>
+<p>Returns true if the coro is found and false otherwise</p>
+<dl class="simple">
+<dt>name: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Name identifying the coro</p>
+</dd>
+<dt>payload: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code> </dt><dd><p>Payload to be fired with the event</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-PyBlox2.Client">
+<span id="pyblox2-client-module"></span><h2>PyBlox2.Client module<a class="headerlink" href="#module-PyBlox2.Client" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="PyBlox2.Client.BloxClient">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.Client.</code><code class="sig-name descname">BloxClient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">loop</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">prefix</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'!'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Client.html#BloxClient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Client.BloxClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Client that manages high level interactions such as commands and events</p>
+<blockquote>
+<div><dl class="simple">
+<dt>verbose: <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></dt><dd><p>Deprecated in 1.1</p>
+</dd>
+<dt>prefix: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></dt><dd><p>Prefix for the commander</p>
+</dd>
+<dt>loop: <code class="xref py py-class docutils literal notranslate"><span class="pre">asyncio.EventLoop</span></code></dt><dd><p>Eventloop for the aiohttp client</p>
+</dd>
+<dt>user: <code class="xref py py-class docutils literal notranslate"><span class="pre">BloxUser</span></code></dt><dd><p>The client’s user</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Fetchables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">friend_requests</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="PyBlox2.Client.BloxClient.command">
+<code class="sig-name descname">command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">coro</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Client.html#BloxClient.command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Client.BloxClient.command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers a command coro</p>
+<p><cite>coro</cite> must be a <em>coro</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Client.BloxClient.event">
+<code class="sig-name descname">event</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">coro</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Client.html#BloxClient.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Client.BloxClient.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Registers an event coro</p>
+<p><cite>coro</cite> must be a <em>coro</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Client.BloxClient.fetch">
+<em class="property">async </em><code class="sig-name descname">fetch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Client.html#BloxClient.fetch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Client.BloxClient.fetch" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Client.BloxClient.friend_requests">
+<em class="property">property </em><code class="sig-name descname">friend_requests</code><a class="headerlink" href="#PyBlox2.Client.BloxClient.friend_requests" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Client.BloxClient.get_group">
+<em class="property">async </em><code class="sig-name descname">get_group</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group_id</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Client.html#BloxClient.get_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Client.BloxClient.get_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <cite>BloxGroup</cite> object with the given group id</p>
+<p>This function checks cache</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Client.BloxClient.get_user">
+<em class="property">async </em><code class="sig-name descname">get_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">identifier</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Client.html#BloxClient.get_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Client.BloxClient.get_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <cite>BloxUser</cite> object by either their username or their id</p>
+<p>This function checks cache</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Client.BloxClient.push_command">
+<em class="property">async </em><code class="sig-name descname">push_command</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">ctx</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Client.html#BloxClient.push_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Client.BloxClient.push_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for self.__commands.fire</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Client.BloxClient.quit">
+<em class="property">async </em><code class="sig-name descname">quit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Client.html#BloxClient.quit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Client.BloxClient.quit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Closes the HTTP client</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Client.BloxClient.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">auth_cookie</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Client.html#BloxClient.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Client.BloxClient.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Starts the connect coroutine and runs the loop</p>
+<p>This does most of the error wrapping</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-PyBlox2.Errors">
+<span id="pyblox2-errors-module"></span><h2>PyBlox2.Errors module<a class="headerlink" href="#module-PyBlox2.Errors" title="Permalink to this headline">¶</a></h2>
+<dl class="py exception">
+<dt id="PyBlox2.Errors.AttributeNotFetched">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">AttributeNotFetched</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attribute</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Errors.html#AttributeNotFetched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.AttributeNotFetched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Errors.PyBloxException" title="PyBlox2.Errors.PyBloxException"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Errors.PyBloxException</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="PyBlox2.Errors.BadArguments">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">BadArguments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">command_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Errors.html#BadArguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.BadArguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Errors.CommandException" title="PyBlox2.Errors.CommandException"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Errors.CommandException</span></code></a></p>
+<p>Arguments in a command are invalid</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="PyBlox2.Errors.CommandException">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">CommandException</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_message</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Errors.html#CommandException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.CommandException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Errors.PyBloxException" title="PyBlox2.Errors.PyBloxException"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Errors.PyBloxException</span></code></a></p>
+<p>Parent class for all exceptions related to commands</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="PyBlox2.Errors.Forbidden">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">Forbidden</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Errors.html#Forbidden"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.Forbidden" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Errors.HttpError" title="PyBlox2.Errors.HttpError"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Errors.HttpError</span></code></a></p>
+<p>Wrapper for the HTTP 403 code</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="PyBlox2.Errors.HttpError">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">HttpError</code><a class="reference internal" href="_modules/PyBlox2/Errors.html#HttpError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.HttpError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code></p>
+<p>Parent class for all HTTP errors</p>
+<dl class="py attribute">
+<dt id="PyBlox2.Errors.HttpError.Forbidden">
+<code class="sig-name descname">Forbidden</code><em class="property"> = '403 Forbidden'</em><a class="headerlink" href="#PyBlox2.Errors.HttpError.Forbidden" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="PyBlox2.Errors.HttpError.NotFound">
+<code class="sig-name descname">NotFound</code><em class="property"> = '404 Not Found'</em><a class="headerlink" href="#PyBlox2.Errors.HttpError.NotFound" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="PyBlox2.Errors.HttpError.Unauthorized">
+<code class="sig-name descname">Unauthorized</code><em class="property"> = '401 Unauthorized'</em><a class="headerlink" href="#PyBlox2.Errors.HttpError.Unauthorized" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt id="PyBlox2.Errors.HttpError.UnknownClientError">
+<code class="sig-name descname">UnknownClientError</code><em class="property"> = 'Unidentified HTTP error'</em><a class="headerlink" href="#PyBlox2.Errors.HttpError.UnknownClientError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Errors.HttpError.error">
+<em class="property">static </em><code class="sig-name descname">error</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Errors.html#HttpError.error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.HttpError.error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="PyBlox2.Errors.NilInstance">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">NilInstance</code><a class="reference internal" href="_modules/PyBlox2/Errors.html#NilInstance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.NilInstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Errors.PyBloxException" title="PyBlox2.Errors.PyBloxException"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Errors.PyBloxException</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="PyBlox2.Errors.NotFound">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">NotFound</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Errors.html#NotFound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.NotFound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Errors.HttpError" title="PyBlox2.Errors.HttpError"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Errors.HttpError</span></code></a></p>
+<p>Wrapper for the HTTP 404 code</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="PyBlox2.Errors.PyBloxException">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">PyBloxException</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_message</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Errors.html#PyBloxException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.PyBloxException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">BaseException</span></code></p>
+<p>Parent class for library related errors</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="PyBlox2.Errors.Unauthorized">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">Unauthorized</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Errors.html#Unauthorized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.Unauthorized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Errors.HttpError" title="PyBlox2.Errors.HttpError"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Errors.HttpError</span></code></a></p>
+<p>Wrapper for the HTTP 401 code</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="PyBlox2.Errors.UnknownClientError">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">UnknownClientError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Errors.html#UnknownClientError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.UnknownClientError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Errors.HttpError" title="PyBlox2.Errors.HttpError"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Errors.HttpError</span></code></a></p>
+<p>Wrapper for any HTTP code that isn’t recognized by HttpError</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="PyBlox2.Errors.UserBlocked">
+<em class="property">exception </em><code class="sig-prename descclassname">PyBlox2.Errors.</code><code class="sig-name descname">UserBlocked</code><a class="reference internal" href="_modules/PyBlox2/Errors.html#UserBlocked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Errors.UserBlocked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Errors.PyBloxException" title="PyBlox2.Errors.PyBloxException"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Errors.PyBloxException</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-PyBlox2.Groups">
+<span id="pyblox2-groups-module"></span><h2>PyBlox2.Groups module<a class="headerlink" href="#module-PyBlox2.Groups" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="PyBlox2.Groups.BloxGroup">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.Groups.</code><code class="sig-name descname">BloxGroup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">group_id</span></em>, <em class="sig-param"><span class="n">roles</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Groups.html#BloxGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Groups.BloxGroup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Base.BloxType" title="PyBlox2.Base.BloxType"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Base.BloxType</span></code></a></p>
+<p>A handler for a roblox group</p>
+<dl class="simple">
+<dt>Attrs:</dt><dd><p><cite>id</cite>
+<cite>roles</cite></p>
+</dd>
+<dt>Fetchables:</dt><dd><p><cite>join_requests</cite>
+<cite>name</cite>
+<cite>members</cite></p>
+</dd>
+<dt>Meths:</dt><dd><dl class="simple">
+<dt>async <cite>fetch</cite>:</dt><dd><p>&gt;&gt; name = await group.fetch(“name”) # where <cite>group</cite> is a BloxGroup</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Fetched users <em>will</em> be added to cache when using async meth <cite>fetch</cite>
+Attr <cite>roles</cite> will be deprecated in 1.1 in favor of Fetchable <cite>roles</cite></p>
+<dl class="py method">
+<dt id="PyBlox2.Groups.BloxGroup.fetch_join_requests">
+<em class="property">async </em><code class="sig-name descname">fetch_join_requests</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Groups.html#BloxGroup.fetch_join_requests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Groups.BloxGroup.fetch_join_requests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of users that request to join the group</p>
+<p>Fetches settings</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Groups.BloxGroup.fetch_members">
+<em class="property">async </em><code class="sig-name descname">fetch_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Groups.html#BloxGroup.fetch_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Groups.BloxGroup.fetch_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all the group’s members</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Groups.BloxGroup.fetch_name">
+<em class="property">async </em><code class="sig-name descname">fetch_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Groups.html#BloxGroup.fetch_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Groups.BloxGroup.fetch_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Groups.BloxGroup.fetch_settings">
+<em class="property">async </em><code class="sig-name descname">fetch_settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Groups.html#BloxGroup.fetch_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Groups.BloxGroup.fetch_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <cite>BloxSetting</cite> object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Groups.BloxGroup.get_member">
+<em class="property">async </em><code class="sig-name descname">get_member</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">username</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Groups.html#BloxGroup.get_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Groups.BloxGroup.get_member" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Groups.BloxGroup.get_role">
+<em class="property">async </em><code class="sig-name descname">get_role</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Groups.html#BloxGroup.get_role"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Groups.BloxGroup.get_role" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a BloxRank with the given name</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-PyBlox2.Member">
+<span id="pyblox2-member-module"></span><h2>PyBlox2.Member module<a class="headerlink" href="#module-PyBlox2.Member" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="PyBlox2.Member.BloxMember">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.Member.</code><code class="sig-name descname">BloxMember</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">user_id</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">username</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">group</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Member.html#BloxMember"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Member.BloxMember" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.User.BloxUser" title="PyBlox2.User.BloxUser"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.User.BloxUser</span></code></a></p>
+<p>A Member object with an attached group that acts as a user object with additional methods to manage the user in relation to the group.</p>
+<dl class="simple">
+<dt>Attrs:</dt><dd><p><cite>id</cite>
+<cite>username</cite> | <cite>name</cite></p>
+</dd>
+<dt>Fetchable:</dt><dd><p><cite>friends</cite></p>
+</dd>
+<dt>Meths:</dt><dd><dl class="simple">
+<dt>async <cite>fetch</cite>:</dt><dd><p>&gt;&gt; my_friends = await client.user.fetch(“friends”) # where <cite>client</cite> is the BloxClient</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Fetched user <em>will</em> be added to cache when using async meth <cite>fetch</cite></p>
+<dl class="py method">
+<dt id="PyBlox2.Member.BloxMember.kick">
+<em class="property">async </em><code class="sig-name descname">kick</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Member.html#BloxMember.kick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Member.BloxMember.kick" title="Permalink to this definition">¶</a></dt>
+<dd><p>kicks the user from the group</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.Member.BloxMember.set_role">
+<em class="property">async </em><code class="sig-name descname">set_role</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">role</span><span class="p">:</span> <span class="n"><a class="reference internal" href="#PyBlox2.Ranks.BloxRank" title="PyBlox2.Ranks.BloxRank">PyBlox2.Ranks.BloxRank</a></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Member.html#BloxMember.set_role"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Member.BloxMember.set_role" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the user’s role in the group</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-PyBlox2.Ranks">
+<span id="pyblox2-ranks-module"></span><h2>PyBlox2.Ranks module<a class="headerlink" href="#module-PyBlox2.Ranks" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="PyBlox2.Ranks.BloxRank">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.Ranks.</code><code class="sig-name descname">BloxRank</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span></em>, <em class="sig-param"><span class="n">group</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Ranks.html#BloxRank"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Ranks.BloxRank" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Base.BloxType" title="PyBlox2.Base.BloxType"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Base.BloxType</span></code></a></p>
+<p>A rank object used to modify a user’s rank 
+or modify the name, rank or description of a rank</p>
+<dl class="simple">
+<dt>Attrs:</dt><dd><p><cite>name</cite>
+<cite>id</cite>
+<cite>rank</cite>
+<cite>member_count</cite>
+<cite>group</cite>: BloxGroup
+<cite>description</cite></p>
+</dd>
+<dt>Fetchables:</dt><dd><p><cite>members</cite>: List(Member.BloxMember)</p>
+</dd>
+<dt>Meths:</dt><dd><dl class="simple">
+<dt>async <cite>fetch</cite>:</dt><dd><p>&gt;&gt; developers = await rank.fetch(“members”) # where <cite>rank</cite> is a group’s developer rank</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Fetched user <em>will</em> be added to cache when using async meth <cite>fetch</cite></p>
+<dl class="py method">
+<dt id="PyBlox2.Ranks.BloxRank.fetch_members">
+<em class="property">async </em><code class="sig-name descname">fetch_members</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Ranks.html#BloxRank.fetch_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Ranks.BloxRank.fetch_members" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-PyBlox2.Response">
+<span id="pyblox2-response-module"></span><h2>PyBlox2.Response module<a class="headerlink" href="#module-PyBlox2.Response" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="PyBlox2.Response.BloxResponse">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.Response.</code><code class="sig-name descname">BloxResponse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">status</span></em>, <em class="sig-param"><span class="n">text</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">headers</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Response.html#BloxResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Response.BloxResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A response from the Roblox API</p>
+<dl class="simple">
+<dt>Attrs:</dt><dd><p><cite>status</cite>
+<cite>text</cite>
+<cite>headers</cite> -&gt; May or may not exist
+<cite>json</cite></p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="PyBlox2.Response.BloxResponse.json">
+<em class="property">property </em><code class="sig-name descname">json</code><a class="headerlink" href="#PyBlox2.Response.BloxResponse.json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-PyBlox2.Settings">
+<span id="pyblox2-settings-module"></span><h2>PyBlox2.Settings module<a class="headerlink" href="#module-PyBlox2.Settings" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="PyBlox2.Settings.BloxSettings">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.Settings.</code><code class="sig-name descname">BloxSettings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Settings.html#BloxSettings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Settings.BloxSettings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Settings for a group object</p>
+<dl class="simple">
+<dt>Attrs:</dt><dd><p><cite>is_approval_required</cite>
+<cite>is_builders_club_required</cite>
+<cite>are_enemies_allowed</cite>
+<cite>are_group_games_visible</cite>
+<cite>are_group_funds_visible</cite></p>
+</dd>
+</dl>
+<p>This object will be deprecated in 1.1 in favor of a DataContainer</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="PyBlox2.Settings.create_settings">
+<code class="sig-prename descclassname">PyBlox2.Settings.</code><code class="sig-name descname">create_settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">payload</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/Settings.html#create_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.Settings.create_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used in 1.1+ to create a settings DataContainer</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-PyBlox2.User">
+<span id="pyblox2-user-module"></span><h2>PyBlox2.User module<a class="headerlink" href="#module-PyBlox2.User" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="PyBlox2.User.BloxUser">
+<em class="property">class </em><code class="sig-prename descclassname">PyBlox2.User.</code><code class="sig-name descname">BloxUser</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">user_id</span></em>, <em class="sig-param"><span class="n">username</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#PyBlox2.Base.BloxType" title="PyBlox2.Base.BloxType"><code class="xref py py-class docutils literal notranslate"><span class="pre">PyBlox2.Base.BloxType</span></code></a></p>
+<p>A handler for a roblox user</p>
+<dl class="simple">
+<dt>Attrs:</dt><dd><p><cite>id</cite>
+<cite>username</cite> | <cite>name</cite></p>
+</dd>
+<dt>Fetchables:</dt><dd><p><cite>friends</cite></p>
+</dd>
+<dt>Meths:</dt><dd><dl class="simple">
+<dt>async <cite>fetch</cite>:</dt><dd><p>&gt;&gt; my_friends = await client.user.fetch(“friends”) # where <cite>client</cite> is the BloxClient</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p>Fetched user <em>will</em> be added to cache when using async meth <cite>fetch</cite></p>
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.accept_friend_request">
+<em class="property">async </em><code class="sig-name descname">accept_friend_request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser.accept_friend_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser.accept_friend_request" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.add_friend">
+<em class="property">async </em><code class="sig-name descname">add_friend</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser.add_friend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser.add_friend" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.block">
+<em class="property">async </em><code class="sig-name descname">block</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser.block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser.block" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.decline_friend_request">
+<em class="property">async </em><code class="sig-name descname">decline_friend_request</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser.decline_friend_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser.decline_friend_request" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.fetch_friends">
+<em class="property">async </em><code class="sig-name descname">fetch_friends</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser.fetch_friends"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser.fetch_friends" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.follow">
+<em class="property">async </em><code class="sig-name descname">follow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser.follow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser.follow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.name">
+<em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#PyBlox2.User.BloxUser.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.request_friendship">
+<em class="property">async </em><code class="sig-name descname">request_friendship</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser.request_friendship"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser.request_friendship" title="Permalink to this definition">¶</a></dt>
+<dd><p>Will be deprecated in 1.1 in favor of add_friend</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.unblock">
+<em class="property">async </em><code class="sig-name descname">unblock</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser.unblock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser.unblock" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.unfollow">
+<em class="property">async </em><code class="sig-name descname">unfollow</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser.unfollow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser.unfollow" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="PyBlox2.User.BloxUser.unfriend">
+<em class="property">async </em><code class="sig-name descname">unfriend</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/PyBlox2/User.html#BloxUser.unfriend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#PyBlox2.User.BloxUser.unfriend" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-PyBlox2">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-PyBlox2" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyBlox2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">PyBlox2 package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="PyBlox2.utils.html">PyBlox2.utils package</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-PyBlox2.Base">PyBlox2.Base module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-PyBlox2.Client">PyBlox2.Client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-PyBlox2.Errors">PyBlox2.Errors module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-PyBlox2.Groups">PyBlox2.Groups module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-PyBlox2.Member">PyBlox2.Member module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-PyBlox2.Ranks">PyBlox2.Ranks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-PyBlox2.Response">PyBlox2.Response module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-PyBlox2.Settings">PyBlox2.Settings module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-PyBlox2.User">PyBlox2.User module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-PyBlox2">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to PyBlox2’s documentation!</a></li>
+      <li>Next: <a href="PyBlox2.utils.html" title="next chapter">PyBlox2.utils package</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Author.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/PyBlox2.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

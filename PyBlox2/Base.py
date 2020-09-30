@@ -2,11 +2,10 @@ from .Errors import AttributeNotFetched
 
 class BloxType():
     '''
-    The base class for most high level items.
+    Handler for the fetching feature.
 
-    Can be fetched and has fetchables
+    Example: ::
 
-    ```
         class MyCustomBloxType(BloxType):
 
             def __init__(self):
@@ -26,23 +25,52 @@ class BloxType():
         >> 200
         MyCustomInstance.money
         >> 200
-    ```
+    
+    Attributes
+    ----------
+    client: :class:`BloxClient`
+        The BloxClient this object is attached to.
+    fetchable: :class:`list`
+        List of fetchable attributes.
 
-    Will raise "NotImplementedError" if the fetch_{attr} where {attr} is the name of the attribute, function doesn't exist.
-   
+    .. warning::
+        
+        Will raise `NotImplementedError` the if fetch_{attr}, where {attr} is the name of the attribute, meth doesn't exist.
+
+    .. warning::
+
+        This class shouldn't be used alone, it exists to only to be subclassed.
     '''
     def __init__(self, client):
         self.client = client
         self.fetchable = []
 
     async def fetch(self, *attrs):
+        """
+        Fetches an attribute by calling :func:`BloxType._fetcher`
+        
+        Parameters
+        ----------
+        \*attrs: :class:`str`
+            List of attribute names to fetch
+        """
+        resp = None
         for attr in attrs:
             if attr in self.fetchable:
                 resp = await self._fetcher(attr)
                 setattr(self, "_"+attr, resp)
-                return resp
+        if resp:
+            return resp
 
     def can_fetch(self, *data):
+        """
+        Extends the `fetchable` list with the list of attributes providen
+
+        Paramaters
+        ----------
+        \*attrs: :class:`str`
+            List of attribute names that can be fetched        
+        """
         self.fetchable.extend(data)
 
     async def _fetcher(self, attr):
@@ -68,14 +96,23 @@ class DataContainer():
         self.__data = {}
 
     def find(self, name):
+        """
+        Wrapper for :func:`__data.__getitem__`
+        """
         if name in self.__data:
             return self.__data[name]
         return None
 
     def add(self, key, value):
+        """
+        Wrapper for :func:`__data.__setitem__`
+        """
         self.__data[key] = value
         
     def is_empty(self):
+        """
+        Wrapper for :func:`__data.__bool__`
+        """
         if self.__data:
             return False
         return True
@@ -107,6 +144,19 @@ class Emitter(DataContainer):
        super().__init__()
 
     async def fire(self, name, payload):
+        """
+        Searches for a coro with the `name` and fires it with the given `payload`
+
+        Returns true if the coro is found and false otherwise
+
+        Parameters
+        ----------
+        name: :class:`str`
+            Name identifying the coro
+
+        payload: :class:`tuple` 
+            Payload to be fired with the event
+        """
         coro = self.find(name)
         if coro:
             await coro(*payload)

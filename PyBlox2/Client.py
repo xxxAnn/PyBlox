@@ -11,15 +11,20 @@ class BloxClient:
     """
     Client that manages high level interactions such as commands and events
 
-    Attrs:
-        `verbose` -> Default bool "False"
-        `prefix` -> Default str "!"
-        `loop` 
-        after `meth` run is executed:
-        `user`
+    Attributes
+    ----------
+        verbose: :class:`bool`
+            Deprecated in 1.1
+        prefix: :class:`str`
+            Prefix for the commander
+        loop: :class:`asyncio.EventLoop`
+            Eventloop for the aiohttp client
+        user: :class:`BloxUser`
+            The client's user
 
-    Fetchable:
-        `friend_requests`
+    Fetchables::
+        
+        friend_requests
     """
     def __init__(self, verbose=False, loop=None, prefix: str="!"):
 
