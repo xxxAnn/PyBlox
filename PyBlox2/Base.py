@@ -72,11 +72,12 @@ class BloxType():
         self.client = client
         self.fetchable = []
 
-    async def fetch(self, attr: str):
-        if attr in self.fetchable:
-            resp = await self._fetcher(attr)
-            setattr(self, "_"+attr, resp)
-            return resp
+    async def fetch(self, *attrs):
+        for attr in attrs:
+            if attr in self.fetchable:
+                resp = await self._fetcher(attr)
+                setattr(self, "_"+attr, resp)
+                return resp
 
     def can_fetch(self, *data):
         self.fetchable.extend(data)
