@@ -6,18 +6,11 @@
 
 # -- Path setup --------------------------------------------------------------
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
-# import os
-# import sys
-# sys.path.insert(0, 'C:\\Users\\user\\Documents\\projects\\Current\\PyBlox\\PyBlox2')
 
 import sys
 import os
 
-sys.path.insert(0, 'C:\\Users\\user\\Documents\\projects\\Current\\PyBlox')
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
@@ -33,9 +26,18 @@ author = 'Author'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.extlinks',
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.intersphinx',
 ]
+
+intersphinx_mapping = {
+  'py': ('https://docs.python.org/3', None),
+  'aio': ('https://docs.aiohttp.org/en/stable/', None),
+  'req': ('http://docs.python-requests.org/en/latest/', 'requests.inv')
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -51,6 +53,8 @@ language = 'en'
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+# The full version, including alpha/beta/rc tags.
+release = '1.0.0'
 
 
 # -- Options for HTML output -------------------------------------------------

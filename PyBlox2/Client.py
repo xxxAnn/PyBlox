@@ -11,16 +11,16 @@ class BloxClient:
     """
     Client that manages high level interactions such as commands and events
 
-    Attributes
-    ----------
-        verbose: :class:`bool`
-            Deprecated in 1.1
-        prefix: :class:`str`
-            Prefix for the commander
-        loop: :class:`asyncio.EventLoop`
-            Eventloop for the aiohttp client
-        user: :class:`BloxUser`
-            The client's user
+    Parameters
+    -----------
+    verbose: :class:`bool`
+        Deprecated in 1.1
+    prefix: :class:`str`
+        Prefix for the commander
+    loop: :class:`asyncio.EventLoop`
+        Eventloop for the aiohttp client
+    user: :class:`BloxUser`
+        The client's user
 
     Fetchables::
         
@@ -42,7 +42,10 @@ class BloxClient:
         """
         Starts the connect coroutine and runs the loop
 
-        This does most of the error wrapping
+        Parameters
+        -----------
+        auth_cookie: :class:`str`
+
         """
         loop = self.loop
 
@@ -110,9 +113,12 @@ class BloxClient:
     
     def command(self, coro):
         """
-        Registers a command coro
+        Decorator function which adds a command `coro`
 
-        `coro` must be a *coro*
+        Parameters
+        ----------
+        coro: :class:`generator`
+            This coroutine must accept at least one argument.
         """
         if not asyncio.iscoroutinefunction(coro):
             raise TypeError(

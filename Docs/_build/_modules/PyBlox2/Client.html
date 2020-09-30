@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PyBlox2.Client &#8212; PyBlox2  documentation</title>
+    <title>PyBlox2.Client &#8212; PyBlox2 1.0.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -45,16 +45,16 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Client that manages high level interactions such as commands and events</span>
 
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">        verbose: :class:`bool`</span>
-<span class="sd">            Deprecated in 1.1</span>
-<span class="sd">        prefix: :class:`str`</span>
-<span class="sd">            Prefix for the commander</span>
-<span class="sd">        loop: :class:`asyncio.EventLoop`</span>
-<span class="sd">            Eventloop for the aiohttp client</span>
-<span class="sd">        user: :class:`BloxUser`</span>
-<span class="sd">            The client&#39;s user</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    verbose: :class:`bool`</span>
+<span class="sd">        Deprecated in 1.1</span>
+<span class="sd">    prefix: :class:`str`</span>
+<span class="sd">        Prefix for the commander</span>
+<span class="sd">    loop: :class:`asyncio.EventLoop`</span>
+<span class="sd">        Eventloop for the aiohttp client</span>
+<span class="sd">    user: :class:`BloxUser`</span>
+<span class="sd">        The client&#39;s user</span>
 
 <span class="sd">    Fetchables::</span>
 <span class="sd">        </span>
@@ -76,7 +76,10 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Starts the connect coroutine and runs the loop</span>
 
-<span class="sd">        This does most of the error wrapping</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        auth_cookie: :class:`str`</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">loop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loop</span>
 
@@ -144,9 +147,12 @@
     
 <div class="viewcode-block" id="BloxClient.command"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.Client.BloxClient.command">[docs]</a>    <span class="k">def</span> <span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coro</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Registers a command coro</span>
+<span class="sd">        Decorator function which adds a command `coro`</span>
 
-<span class="sd">        `coro` must be a *coro*</span>
+<span class="sd">        Paramters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coro: :class:`generator`</span>
+<span class="sd">            This coroutine must accept at least one argument.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="n">coro</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -175,7 +181,7 @@
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">raise</span></div>
 
-<div class="viewcode-block" id="BloxClient.fetch"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.Client.BloxClient.fetch">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="s2">&quot;friend_requests&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
 
@@ -188,7 +194,7 @@
             <span class="n">list_members</span> <span class="o">=</span> <span class="k">await</span> <span class="n">read_pages</span><span class="p">(</span><span class="n">access</span><span class="p">,</span> <span class="n">create_user</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">__friend_requests</span> <span class="o">=</span> <span class="n">list_members</span>
-            <span class="k">return</span> <span class="n">list_members</span></div>
+            <span class="k">return</span> <span class="n">list_members</span>
 
 <div class="viewcode-block" id="BloxClient.get_user"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.Client.BloxClient.get_user">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span> 
         <span class="sd">&quot;&quot;&quot;</span>
@@ -273,7 +279,6 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../PyBlox2.html">PyBlox2 package</a></li>
 </ul>

@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PyBlox2.Ranks &#8212; PyBlox2  documentation</title>
+    <title>PyBlox2.Ranks &#8212; PyBlox2 1.0.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -70,7 +70,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="o">=</span> <span class="n">group</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">can_fetch</span><span class="p">(</span><span class="s2">&quot;members&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="BloxRank.fetch_members"><a class="viewcode-back" href="../../PyBlox2.html#PyBlox2.Ranks.BloxRank.fetch_members">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_members</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">fetch_members</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">role_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span>
         <span class="n">access</span> <span class="o">=</span> <span class="n">Url</span><span class="p">(</span><span class="s2">&quot;groups&quot;</span><span class="p">,</span> <span class="s2">&quot;/v1/groups/</span><span class="si">%g</span><span class="s2">roup_id%/roles/</span><span class="si">%i</span><span class="s2">d%/users&quot;</span><span class="p">,</span> <span class="n">group_id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="n">members_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -84,7 +84,7 @@
                 <span class="s2">&quot;Could not find members&quot;</span>
                 <span class="p">)</span>
         
-        <span class="k">return</span> <span class="n">result</span></div></div>
+        <span class="k">return</span> <span class="n">result</span></div>
 </pre></div>
 
           </div>
@@ -103,7 +103,6 @@
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../PyBlox2.html">PyBlox2 package</a></li>
 </ul>

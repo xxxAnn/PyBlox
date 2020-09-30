@@ -7,8 +7,7 @@ Welcome to PyBlox2's documentation!
 ===================================
 
 .. toctree::
-   :maxdepth: 4
-   :caption: Contents:
+   :maxdepth: 2
 
    PyBlox2
 
