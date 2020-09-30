@@ -73,9 +73,11 @@ class BloxClient:
         self.__http = HttpClient(self.loop) 
 
     def run(self, auth_cookie, **kwargs):
-        '''
+        """
         Starts the connect coroutine and runs the loop
-        '''
+
+        This does most of the error wrapping
+        """
         loop = self.loop
 
         async def start():
@@ -86,8 +88,6 @@ class BloxClient:
                 if kwargs.get("group_id"):
                     listening_group = await self.get_group(kwargs.pop("group_id"))
                     await self.__commander.start_listening(self, self.__commands, listening_group)
-            except KeyboardInterrupt:
-                pass
             except Exception:
                 raise
             finally:
