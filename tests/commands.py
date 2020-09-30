@@ -40,8 +40,8 @@ async def ping(ctx, text):
     # however the first argument is always "context" 
     # 
     # If the amount of arguments from the command on the group wall
-    # Doesn't match the amount of arguments in the command here
-    # then PyBlox2.BadArgument will be raised
+    # doesn't match the amount of arguments in the command here
+    # then PyBlox2.BadArguments will be raised
     print('pong ', text)
 
 @client.event
