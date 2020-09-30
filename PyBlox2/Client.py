@@ -10,7 +10,7 @@ Requires:
     `User`: `BloxUser`
     `Ranks`: `BloxRank`
     `Response`: `BloxResponse`
-    `.utils`: `Url`, `HttpClient`, `Cache`, `Commander`
+    `.utils`: `Url`, `HttpClient`, `Cache`, `Commander`, `read_pages`
 
 The following code is provided with: 
 
@@ -109,11 +109,16 @@ class BloxClient:
             pass
         finally:
             try:
-               if runner.exception():
-                    raise runner.exception()
+               e = runner.exception()
+               if e:
+                    if isinstance(e, PyBloxException):
+                        print("Oops, something went wrong: {}\nThis exception can be expected and should be handled.".format(e))
+                    else:
+                        raise runner.exception()
             except asyncio.exceptions.InvalidStateError:
                 pass
-            runner.remove_done_callback(kill_loop)
+            finally:
+                runner.remove_done_callback(kill_loop)
 
     async def quit(self):
         """
