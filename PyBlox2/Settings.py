@@ -6,15 +6,18 @@ def _cool_pop(payload, name):
 class BloxSettings:
     """
     Settings for a group object
+    
+    .. note::
+        This object will be legacy in 1.1+
 
-    Attrs:
-        `is_approval_required`
-        `is_builders_club_required`
-        `are_enemies_allowed`
-        `are_group_games_visible`
-        `are_group_funds_visible`
+    Attributes
+    -----------
+    is_approval_required
+    is_builders_club_required
+    are_enemies_allowed
+    are_group_games_visible
+    are_group_funds_visible
 
-    This object will be deprecated in 1.1 in favor of a DataContainer
     """
     def __init__(self, payload):
         self.is_approval_required = _cool_pop(payload, "isApprovalRequired")
@@ -25,7 +28,10 @@ class BloxSettings:
 
 def create_settings(payload):
     """
-    Used in 1.1+ to create a settings DataContainer
+    .. versionadded::
+        1.1
+
+    Will be used in 1.1+ to create a settings DataContainer
     """
     settings = DataContainer()
 

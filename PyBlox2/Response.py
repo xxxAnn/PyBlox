@@ -4,11 +4,11 @@ class BloxResponse:
     """
     A response from the Roblox API
 
-    Attrs:
-        `status`
-        `text`
-        `headers` -> May or may not exist
-        `json`
+    Attributes
+    -----------
+    status: :class:`int`
+    text: :class:`str`
+    headers: Optional[:class:`aiohttp.CIMultiDictProxy`]
     """
     def __init__(self, status, text: str, headers=None):
         self.status = status
@@ -18,4 +18,7 @@ class BloxResponse:
 
     @property
     def json(self):
+        """
+        Returns the text attribute parsed with json
+        """
         return json.loads(self.text)

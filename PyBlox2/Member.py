@@ -5,20 +5,23 @@ from .Errors import *
 
 class BloxMember(BloxUser):
     """
-    A Member object with an attached group that acts as a user object with additional methods to manage the user in relation to the group.
+    A member object managing a user in relation to a specific group
 
-    Attrs:
-        `id`
-        `username` | `name`
+    .. note::
+        This class shouldn't manually be created
 
-    Fetchable:
-        `friends`
+    Attributes
+    ----------
+    id: :class:`str`
+        The userId of the user
+    group: :class:`PyBlox2.Groups.BloxGroup`
+        The group this user is member of
+    username: :class:`str`
+        The username of the user
+    friends: list[:class:`PyBlox2.User.BloxUser`]
+        |fch|
 
-    Meths:
-        async `fetch`:
-            >> my_friends = await client.user.fetch("friends") # where `client` is the BloxClient
-
-    Fetched user *will* be added to cache when using async meth `fetch`
+        List of this user's friends
     """
     def __init__(self, client, user_id: str, username: str, group):
         super().__init__(client=client, user_id=user_id, username=username)
@@ -26,9 +29,21 @@ class BloxMember(BloxUser):
         self.__access = Url("groups", "/v1/groups/%group_id%/users/%user_id%", group_id=self.group.id, user_id=self.id) 
 
     async def set_role(self, role: BloxRank):
-        '''
+        """|coro|
+
         Changes the user's role in the group
-        '''
+
+        Parameters
+        ----------
+        role: :class:`PyBlox2.Ranks.BloxRank`
+
+        Raises
+        ------
+        :exc:`PyBlox2.Errors.Forbidden`
+            You do not have permissions to edit that role
+        :exc:`PyBlox2.Errors.NilInstance`
+            The member doesn't exist or isn't in this group anymore
+        """
         payload = "{\"roleId\":" + str(role.id) + "}"
         try:
             await self.__access.patch(payload)
@@ -37,7 +52,15 @@ class BloxMember(BloxUser):
                 raise NilInstance
     
     async def kick(self):
-        '''
-        kicks the user from the group
-        '''
+        """|coro|
+
+        Kicks the user from the group
+
+        Raises
+        ------
+        :exc:`PyBlox2.Errors.Forbidden`
+            You do not have permissions to kick this user
+        :exc:`PyBlox2.Errors.NilInstance`
+            The member doesn't exist or isn't in this group anymore
+        """
         await self.__access.delete()
