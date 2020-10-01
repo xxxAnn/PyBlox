@@ -3,23 +3,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Cache:
-    """
-    Cache object storing pre-existing information
-
-    Attrs:
-        N/A
-
-    Meths:
-        add_{name} where name is the name of the pool
-        get_{name} were name is the name of the pool
-
-        Examples:
-            >> cache.add_user("identifier", user_object)
-            >> cached_user = cache.get_user("identifier")
-            >> assert cached_user == user_object
-
-    This object should only be used locally by the library
-    """
+    
     def __getattr__(self, attr):
 
         if attr.startswith("add_"):
