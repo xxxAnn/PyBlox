@@ -1,42 +1,3 @@
-"""
-`Client` is the main module for managing high level interactions and events
-
-Contents:
-    `BloxClient`: No Parent
-
-Requires:
-    `Errors`: `*`
-    `Base`: `BloxType`
-    `User`: `BloxUser`
-    `Ranks`: `BloxRank`
-    `Response`: `BloxResponse`
-    `.utils`: `Url`, `HttpClient`, `Cache`, `Commander`, `read_pages`
-
-The following code is provided with: 
-
-    The MIT License (MIT)
-
-    Copyright (c) Kyando 2020
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-"""
-
 import asyncio
 
 from .User import BloxUser
@@ -50,15 +11,14 @@ class BloxClient:
     """
     Client that manages high level interactions such as commands and events
 
-    Attrs:
-        `verbose` -> Default bool "False"
-        `prefix` -> Default str "!"
-        `loop` 
-        after `meth` run is executed:
-        `user`
-
-    Fetchable:
-        `friend_requests`
+    Parameters
+    -----------
+    prefix: :class:`str`
+        Prefix for the commander
+    loop: :class:`asyncio.AbstractEventLoop`
+        Eventloop for the aiohttp client
+    user: Optional[:class:`PyBlox2.User.BloxUser`]
+        The client's user object :class:`None` if not logged in
     """
     def __init__(self, verbose=False, loop=None, prefix: str="!"):
 
@@ -68,15 +28,22 @@ class BloxClient:
         self.__cache = Cache()
         self.prefix = prefix
 
-        self.verbose = verbose
+        self.__verbose = verbose
         self.loop = asyncio.get_event_loop() if loop == None else loop
         self.__http = HttpClient(self.loop) 
 
     def run(self, auth_cookie, **kwargs):
         """
-        Starts the connect coroutine and runs the loop
+        Runs :meth:`PyBlox2.utils.Http.HttpClient.connect` on the :class:`PyBlox2.Client.BloxClient`'s loop
 
-        This does most of the error wrapping
+        .. warning::
+
+            This function is blocking, anything called after will not be executed until it returns.
+
+        Parameters
+        -----------
+        auth_cookie: :class:`str`
+            The roblosecurity cookie used to log in
         """
         loop = self.loop
 
@@ -121,17 +88,28 @@ class BloxClient:
                 runner.remove_done_callback(kill_loop)
 
     async def quit(self):
-        """
-        Closes the HTTP client
+        """|coro|
+
+        Closes the :class:`aiohttp.ClientSession` and ends the :class:`asyncio.AbstractEventLoop`
         """
         await self.__http.close()
         self.loop.stop()
 
     def event(self, coro):
         """
-        Registers an event coro
+        Decorator function which registers an event *coro*
 
-        `coro` must be a *coro*
+        Parameters
+        -----------
+
+        coro: `meth`
+            This coroutine must accept at least one argument.
+
+        Raises
+        ------
+
+        :exc:`TypeError`
+            event registered must be a coroutine function
         """
         if not asyncio.iscoroutinefunction(coro):
             raise TypeError(
@@ -144,9 +122,19 @@ class BloxClient:
     
     def command(self, coro):
         """
-        Registers a command coro
+        Decorator function which adds a command `coro`
 
-        `coro` must be a *coro*
+        Parameters
+        -----------
+
+        coro: `meth`
+            This coroutine must accept at least one argument.
+
+        Raises
+        ------
+
+        :exc:`TypeError`
+            event registered must be a coroutine function
         """
         if not asyncio.iscoroutinefunction(coro):
             raise TypeError(
@@ -158,25 +146,32 @@ class BloxClient:
         return coro
 
     async def _emit(self, event: str, payload):
-        """
-        Shorthand for self.__listener.fire
-        """
         try:
             return await self.__listener.fire(event, payload)
         except Exception:
             raise
 
-    async def push_command(self, name, ctx, args):
-        """
-        Shorthand for self.__commands.fire
-        """
+    async def _push_command(self, name, ctx, args):
         try:
             await self.__commands.fire(name, ctx, args)
         except Exception:
             raise
 
     async def fetch(self, value):
+        """|coro|
 
+        Fetches an attribute
+
+        Parameters
+        -----------
+        value: :class:`str`
+           A valid value to fetch, must be one of the following: `friend_requests`
+
+        Returns
+        --------
+        :class:`list`
+            The fetched value or :class:`None` if not found
+        """
         if "friend_requests" in value:
 
             access = Url("friends", "/v1/my/friends/requests?sortOrder=Asc&limit=100")
@@ -191,10 +186,19 @@ class BloxClient:
             return list_members
 
     async def get_user(self, identifier, **kwargs): 
-        """
-        Returns a `BloxUser` object by either their username or their id
+        """|coro|
+
+        Finds a user through their name or id
         
-        This function checks cache
+        Parameters
+        -----------
+        identifier: :class:`str` | :class:`int`
+            The **case_sensitive** userId or username of the player
+
+        Returns
+        --------
+        :class:`PyBlox2.User.BloxUser`
+            The found BloxUser object or :class:`None` if not found
         """
         is_int = True
 
@@ -229,6 +233,8 @@ class BloxClient:
             user = BloxUser(client=self, user_id=id, username=username)
             self.__cache.add_user(username, user)
             return user
+        
+        return None
 
     async def get_group(self, group_id: str):
         """

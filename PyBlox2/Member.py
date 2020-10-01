@@ -1,41 +1,3 @@
-"""
-`Member` is a submodule of Groups it manages users in relation to a group within the groups API
-
-Contents:
-    `BloxMember`: `BloxUser`
-
-Requires:
-    `Errors`: `*`
-    `Base`: `BloxType`
-    `Ranks`: `BloxRank`
-    `User`: `BloxUser`
-    `.utils`: `Url`
-
-The following code is provided with 
-
-    The MIT License (MIT)
-
-    Copyright (c) Kyando 2020
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-"""
-
 from .User import BloxUser
 from .Ranks import BloxRank
 from .utils import Url
@@ -43,20 +5,23 @@ from .Errors import *
 
 class BloxMember(BloxUser):
     """
-    A Member object with an attached group that acts as a user object with additional methods to manage the user in relation to the group.
+    A member object managing a user in relation to a specific group
 
-    Attrs:
-        `id`
-        `username` | `name`
+    .. note::
+        This class shouldn't manually be created
 
-    Fetchable:
-        `friends`
+    Attributes
+    ----------
+    id: :class:`str`
+        The userId of the user
+    group: :class:`PyBlox2.Groups.BloxGroup`
+        The group this user is member of
+    username: :class:`str`
+        The username of the user
+    friends: list[:class:`PyBlox2.User.BloxUser`]
+        |fch|
 
-    Meths:
-        async `fetch`:
-            >> my_friends = await client.user.fetch("friends") # where `client` is the BloxClient
-
-    Fetched user *will* be added to cache when using async meth `fetch`
+        List of this user's friends
     """
     def __init__(self, client, user_id: str, username: str, group):
         super().__init__(client=client, user_id=user_id, username=username)
@@ -64,9 +29,21 @@ class BloxMember(BloxUser):
         self.__access = Url("groups", "/v1/groups/%group_id%/users/%user_id%", group_id=self.group.id, user_id=self.id) 
 
     async def set_role(self, role: BloxRank):
-        '''
+        """|coro|
+
         Changes the user's role in the group
-        '''
+
+        Parameters
+        ----------
+        role: :class:`PyBlox2.Ranks.BloxRank`
+
+        Raises
+        ------
+        :exc:`PyBlox2.Errors.Forbidden`
+            You do not have permissions to edit that role
+        :exc:`PyBlox2.Errors.NilInstance`
+            The member doesn't exist or isn't in this group anymore
+        """
         payload = "{\"roleId\":" + str(role.id) + "}"
         try:
             await self.__access.patch(payload)
@@ -75,7 +52,15 @@ class BloxMember(BloxUser):
                 raise NilInstance
     
     async def kick(self):
-        '''
-        kicks the user from the group
-        '''
+        """|coro|
+
+        Kicks the user from the group
+
+        Raises
+        ------
+        :exc:`PyBlox2.Errors.Forbidden`
+            You do not have permissions to kick this user
+        :exc:`PyBlox2.Errors.NilInstance`
+            The member doesn't exist or isn't in this group anymore
+        """
         await self.__access.delete()

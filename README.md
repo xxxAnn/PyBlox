@@ -1,5 +1,6 @@
 # PyBlox2
-
+[![MIT License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/Kyando2/PyBlox/blob/async/LICENSE.md)
+[![Version](https://img.shields.io/pypi/v/PyBlox2.svg)](https://pypi.org/project/PyBlox2/)<br>
 High level library for making Roblox bots in Python
 ### Examples
 #### A Basic Example

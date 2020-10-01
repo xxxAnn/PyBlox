@@ -1,39 +1,3 @@
-"""
-`Ranks` is a submodule of Groups it manages the `roleSet` within the groups API
-
-Contents:
-    `BloxRank`: `BloxType`
-
-Requires:
-    `Errors`: `*`
-    `Base`: `BloxType`
-    `.utils`: `Url`
-
-The following code is provided with 
-
-    The MIT License (MIT)
-
-    Copyright (c) Kyando 2020
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-"""
-
 import json
 
 from .Errors import *
@@ -42,25 +6,26 @@ from .utils import Url
 
 class BloxRank(BloxType):
     """
-    A rank object used to modify a user's rank 
-    or modify the name, rank or description of a rank
+    A rank object representing a roleSet in a group
 
-    Attrs:
-        `name`
-        `id`
-        `rank`
-        `member_count`
-        `group`: BloxGroup
-        `description`
-    
-    Fetchables:
-        `members`: List(Member.BloxMember)
+    Attributes
+    ----------
+    name: :class:`str`
+        Name of the role
+    id: :class:`str`
+        roleSetId of the role
+    rank: :class:`int`
+        rank of the role (1-255)
+    member_count: :class:`int`
+        amount of members in the role
+    group: :class:`PyBlox.Groups.BloxGroup`
+        group this role is attached to
+    description: :class:`str`
+        description of this role
+    members: list[:class:`PyBlox2.Member.BloxMember`]
+        |fch|
 
-    Meths:
-        async `fetch`:
-            >> developers = await rank.fetch("members") # where `rank` is a group's developer rank
-
-    Fetched user *will* be added to cache when using async meth `fetch`
+        list of members of this role
     """
     def __init__(self, payload, group):
         super().__init__(group.client)

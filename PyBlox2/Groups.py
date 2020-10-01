@@ -1,43 +1,3 @@
-"""
-`Groups` is the main module for managing interactions with the group API
-
-Contents:
-    `BloxGroup`: `BloxType`
-
-Requires:
-    `Errors`: `*`
-    `Base`: `BloxType`
-    `User`: `BloxUser`
-    `Ranks`: `BloxRank`
-    `Settings`: `BloxSettings`
-    `Member`: `BloxMember`
-    `.utils`: `Url`, `read_pages`
-
-The following code is provided with: 
-
-    The MIT License (MIT)
-
-    Copyright (c) Kyando 2020
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-"""
-
 import json
 import time
 
@@ -54,21 +14,29 @@ class BloxGroup(BloxType):
     """
     A handler for a roblox group
 
-    Attrs:
-        `id`
-        `roles`
+    .. note::
+        This class shouldn't manually be created
 
-    Fetchables:
-        `join_requests`
-        `name`
-        `members`
+    Attributes
+    -----------
+    id: :class:`str`
+        groupId of the group
+    join_requests: list[:class:`PyBlox2.User.BloxUser`]
+        |fch| 
 
-    Meths:
-        async `fetch`:
-            >> name = await group.fetch("name") # where `group` is a BloxGroup
+        A list of users requesting to join the group
+    members: list[:class:`PyBlox2.Member.BloxMember`]
+        |fch| 
 
-    Fetched users *will* be added to cache when using async meth `fetch`
-    Attr `roles` will be deprecated in 1.1 in favor of Fetchable `roles`
+        A list of all the members of the group
+    name: :class:`str`
+        |fch| 
+
+        The name of the group
+    settings: :class:`PyBlox2.Settings.BloxSettings`
+        |fch|
+
+        The settings of the group
     """
     def __init__(self, client, group_id, roles):
         super().__init__(client)
@@ -102,8 +70,19 @@ class BloxGroup(BloxType):
         return real_list
 
     async def get_role(self, name: str):
-        """
+        """|coro|
+
         Returns a BloxRank with the given name
+
+        Parameters
+        -----------
+        name: :class:`str`
+            The name of the rank
+
+        Returns
+        -------
+        :class:`PyBlox2.Ranks.BloxRank`
+            The BloxRank object if found or :class:`None` otherwise
         """
         hook = await Url("groups", "/v1/groups/%id%/roles", id=self.id).get()
         
@@ -114,14 +93,26 @@ class BloxGroup(BloxType):
             if bucket.get("name") == name:
                 return BloxRank(payload=bucket, group=self)
 
+    # TODO: change username to identifier
     async def get_member(self, username: str):
+        """|coro|
+
+        Returns a BloxMember with the given name
+
+        Parameters
+        -----------
+        username: :class:`str`
+            The name of the member
+
+        Returns
+        -------
+        :class:`PyBlox2.Member.BloxMember`
+            The BloxMember object if found or :class:`None` otherwise
+        """
         user = await self.client.get_user(username)
         return BloxMember(client=self.client, user_id=user.id, username=username, group=self)
 
     async def fetch_members(self):
-        """
-        Returns a list of all the group's members
-        """
 
         access = Url("groups", "/v1/groups/%id%/users?sortOrder=Asc&limit=100", id=self.id)
 
@@ -133,11 +124,6 @@ class BloxGroup(BloxType):
         return list_members
 
     async def fetch_join_requests(self):
-        """
-        Returns a list of users that request to join the group
-
-        Fetches settings
-        """
         await self.fetch("settings")
 
         if not self.settings.is_approval_required:
@@ -155,9 +141,6 @@ class BloxGroup(BloxType):
         return list_members
 
     async def fetch_settings(self):
-        """
-        Returns a `BloxSetting` object
-        """
         access = Url("groups", "/v1/groups/%id%/settings", id=self.id)
         data = await access.get()
         data = data.json

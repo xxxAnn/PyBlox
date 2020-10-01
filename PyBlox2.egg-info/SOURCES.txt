@@ -19,4 +19,5 @@ PyBlox2.egg-info/top_level.txt
 PyBlox2/utils/Cache.py
 PyBlox2/utils/Commands.py
 PyBlox2/utils/Http.py
+PyBlox2/utils/Misc.py
 PyBlox2/utils/__init__.py

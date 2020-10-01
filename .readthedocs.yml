@@ -1,0 +1,2 @@
+sphinx:
+  configuration: Docs/conf.py
