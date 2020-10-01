@@ -5,7 +5,7 @@ from .Errors import *
 from .Base import BloxType
 from .User import BloxUser
 from .Ranks import BloxRank
-from .Settings import create_settings
+from .Settings import BloxSettings
 from .Member import BloxMember
 from .utils import Url, read_pages
 
@@ -33,7 +33,7 @@ class BloxGroup(BloxType):
         |fch| 
 
         The name of the group
-    settings: :class:`PyBlox2.Base.DataContainer`
+    settings: :class:`PyBlox2.Settings.BloxSettings`
         |fch|
 
         The settings of the group
@@ -145,5 +145,5 @@ class BloxGroup(BloxType):
         data = await access.get()
         data = data.json
 
-        return create_settings(payload=data)
+        return BloxSettings(payload=data)
         
