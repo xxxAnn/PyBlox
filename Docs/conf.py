@@ -24,6 +24,7 @@ author = 'Kyando'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.extlinks',
@@ -32,6 +33,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.intersphinx',
 ]
+
+master_doc = 'index'
 
 intersphinx_mapping = {
   'py': ('https://docs.python.org/3', None),
@@ -60,7 +63,7 @@ language = 'en'
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 # The full version, including alpha/beta/rc tags.
-release = '1.0.0'
+release = '1.0.1'
 
 
 # -- Options for HTML output ----------------------------------------------

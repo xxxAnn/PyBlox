@@ -7,8 +7,8 @@ class BloxSettings:
     """
     Settings for a group object
     
-    .. note::
-        This object will be legacy in 1.1+
+    .. warning::
+        This object is legacy
 
     Attributes
     -----------
@@ -31,7 +31,13 @@ def create_settings(payload):
     .. versionadded::
         1.1
 
-    Will be used in 1.1+ to create a settings DataContainer
+    Creates a DataContainer with all the settingsg
+
+    Returns
+    -------
+    :class:`PyBlox2.Base.DataContainer`
+        A DataContainer object, its object can be accessed through indexed or in the normal object notation
+        This DataContainer has all the roblox group settings in camel_case notation
     """
     settings = DataContainer()
 
