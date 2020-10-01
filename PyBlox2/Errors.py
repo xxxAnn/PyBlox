@@ -64,17 +64,23 @@ class PyBloxException(BaseException):
         self.__msg = error_message
 
 class UserBlocked(PyBloxException):
-
+    """
+    Attempted to interact with a blocked user
+    """
     def __init__(self):
         super().__init__("Attempted to interact with a blocked user")
 
 class NilInstance(PyBloxException):
-
+    """
+    Attempted manipulation on non existing instance
+    """
     def __init__(self):
         super().__init__("Attempted manipulation on non existing instance")
 
 class AttributeNotFetched(PyBloxException):
-    
+    """
+    Fetchable attribute was accessed before being fetched
+    """
     def __init__(self, attribute):
         error_message = "Attribute '{}' was accessed before being fetched".format(attribute)
         super().__init__(error_message)

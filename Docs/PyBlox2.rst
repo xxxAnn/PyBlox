@@ -1,5 +1,5 @@
-PyBlox2 package
-===============
+PyBlox2 Documentation
+======================
 
 Client
 ---------------------
@@ -48,11 +48,3 @@ Errors
 
 .. automodule:: PyBlox2.Errors
    :members:
-
-Utils
------------
-
-.. toctree::
-   :maxdepth: 2
-
-   PyBlox2.utils

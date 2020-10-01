@@ -6,25 +6,26 @@ from .utils import Url
 
 class BloxRank(BloxType):
     """
-    A rank object used to modify a user's rank 
-    or modify the name, rank or description of a rank
+    A rank object representing a roleSet in a group
 
-    Attrs:
-        `name`
-        `id`
-        `rank`
-        `member_count`
-        `group`: BloxGroup
-        `description`
-    
-    Fetchables:
-        `members`: List(Member.BloxMember)
+    Attributes
+    ----------
+    name: :class:`str`
+        Name of the role
+    id: :class:`str`
+        roleSetId of the role
+    rank: :class:`int`
+        rank of the role (1-255)
+    member_count: :class:`int`
+        amount of members in the role
+    group: :class:`PyBlox.Groups.BloxGroup`
+        group this role is attached to
+    description: :class:`str`
+        description of this role
+    members: list[:class:`PyBlox2.Member.BloxMember`]
+        |fch|
 
-    Meths:
-        async `fetch`:
-            >> developers = await rank.fetch("members") # where `rank` is a group's developer rank
-
-    Fetched user *will* be added to cache when using async meth `fetch`
+        list of members of this role
     """
     def __init__(self, payload, group):
         super().__init__(group.client)
