@@ -1,5 +1,5 @@
-PyBlox2 Documentation
-======================
+PyBlox2 main modules public documentation
+===============
 
 Client
 ---------------------
