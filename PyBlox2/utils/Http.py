@@ -160,11 +160,13 @@ class Url:
 
     def extend(self, extension_url, **params):
         """
-        For example:
+        Example
+        --------
             url = Url("friends", "/v1/users/%user_id%/friends", user_id=...)
             url.extend("/count")
 
-        (Note: this is purely experimental)
+        .. note::
+            this is purely experimental
         """
         url = self.__fullurl + extension_url
         fullparams = self.__unparsedparams.extend(params)
