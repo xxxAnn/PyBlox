@@ -3,9 +3,21 @@ import logging
 logger = logging.getLogger(__name__)
 
 class Cache:
-    
-    def __getattr__(self, attr):
+    """
+    Cache object storing dictionaries in multiple fields
 
+    ::
+
+        Cache.get_{field_name_here}(key)
+        Cache.set_{field_name_here}(key,value)
+
+    .. note:: 
+        set creates a field if the field name is not found
+    """
+    def __getattr__(self, attr):
+        """
+        Returns the appropriate __wrap function
+        """
         if attr.startswith("add_"):
             attr = attr.replace("add_", "")
 

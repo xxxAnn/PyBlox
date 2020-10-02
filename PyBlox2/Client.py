@@ -17,7 +17,7 @@ class BloxClient:
         Prefix for the commander
     loop: :class:`asyncio.AbstractEventLoop`
         Eventloop for the aiohttp client
-    user: Optional[:class:`PyBlox2.User.BloxUser`]
+    user: Optional[:class:`.BloxUser`]
         The client's user object :class:`None` if not logged in
     """
     def __init__(self, verbose=False, loop=None, prefix: str="!"):
@@ -34,7 +34,7 @@ class BloxClient:
 
     def run(self, auth_cookie, **kwargs):
         """
-        Runs :meth:`PyBlox2.utils.Http.HttpClient.connect` on the :class:`PyBlox2.Client.BloxClient`'s loop
+        Creates the HTTP connection headers and the http client on the :class:`.BloxClient`'s loop
 
         .. warning::
 
@@ -197,7 +197,7 @@ class BloxClient:
 
         Returns
         --------
-        :class:`PyBlox2.User.BloxUser`
+        :class:`.BloxUser`
             The found BloxUser object or :class:`None` if not found
         """
         is_int = True
@@ -238,7 +238,7 @@ class BloxClient:
 
     async def get_group(self, group_id: str):
         """
-        Returns a `BloxGroup` object with the given group id
+        Returns a :class:`BloxGroup` object with the given group id
 
         This function checks cache
         """

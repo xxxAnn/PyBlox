@@ -14,11 +14,11 @@ class BloxMember(BloxUser):
     ----------
     id: :class:`str`
         The userId of the user
-    group: :class:`PyBlox2.Groups.BloxGroup`
+    group: :class:`.BloxGroup`
         The group this user is member of
     username: :class:`str`
         The username of the user
-    friends: list[:class:`PyBlox2.User.BloxUser`]
+    friends: list[:class:`.BloxUser`]
         |fch|
 
         List of this user's friends
@@ -35,13 +35,13 @@ class BloxMember(BloxUser):
 
         Parameters
         ----------
-        role: :class:`PyBlox2.Ranks.BloxRank`
+        role: :class:`.BloxRank`
 
         Raises
         ------
-        :exc:`PyBlox2.Errors.Forbidden`
+        :exc:`.Forbidden`
             You do not have permissions to edit that role
-        :exc:`PyBlox2.Errors.NilInstance`
+        :exc:`.NilInstance`
             The member doesn't exist or isn't in this group anymore
         """
         payload = "{\"roleId\":" + str(role.id) + "}"
@@ -58,9 +58,9 @@ class BloxMember(BloxUser):
 
         Raises
         ------
-        :exc:`PyBlox2.Errors.Forbidden`
+        :exc:`.Forbidden`
             You do not have permissions to kick this user
-        :exc:`PyBlox2.Errors.NilInstance`
+        :exc:`.NilInstance`
             The member doesn't exist or isn't in this group anymore
         """
         await self.__access.delete()

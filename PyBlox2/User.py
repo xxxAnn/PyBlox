@@ -17,7 +17,7 @@ class BloxUser(BloxType):
         The userId of the user
     username: :class:`str`
         The username of the user
-    friends: list[:class:`PyBlox2.User.BloxUser`]
+    friends: list[:class:`.BloxUser`]
         |fch|
 
         List of this user's friends
@@ -48,9 +48,9 @@ class BloxUser(BloxType):
         
         Raises
         -------
-        :exc:`PyBlox2.Errors.NilInstance`
+        :exc:`.NilInstance`
             Attempted manipulation on non existing instance
-        :exc:`PyBlox2.Errors.UserBlocked`
+        :exc:`.UserBlocked`
             Attempted to interact with a blocked user
         """
         try:
@@ -68,7 +68,7 @@ class BloxUser(BloxType):
         
         Raises
         -------
-        :exc:`PyBlox2.Errors.NilInstance`
+        :exc:`.NilInstance`
             Attempted manipulation on non existing instance
 
         """
@@ -88,7 +88,7 @@ class BloxUser(BloxType):
 
         Raises
         -------
-        :exc:`PyBlox2.Errors.NilInstance`
+        :exc:`.NilInstance`
             Attempted manipulation on non existing instance
         """
         try: 
@@ -104,7 +104,7 @@ class BloxUser(BloxType):
         
         Raises
         -------
-        :exc:`PyBlox2.Errors.NilInstance`
+        :exc:`.NilInstance`
             Attempted manipulation on non existing instance
         """
         try:
@@ -120,7 +120,7 @@ class BloxUser(BloxType):
         
         Raises
         -------
-        :exc:`PyBlox2.Errors.NilInstance`
+        :exc:`.NilInstance`
             Attempted manipulation on non existing instance
         """
         try:
@@ -138,7 +138,7 @@ class BloxUser(BloxType):
         
         Raises
         -------
-        :exc:`PyBlox2.Errors.NilInstance`
+        :exc:`.NilInstance`
             Attempted manipulation on non existing instance
         """
         try:
@@ -154,7 +154,7 @@ class BloxUser(BloxType):
         
         Raises
         -------
-        :exc:`PyBlox2.Errors.NilInstance`
+        :exc:`.NilInstance`
             Attempted manipulation on non existing instance
         """
         try:
@@ -170,7 +170,7 @@ class BloxUser(BloxType):
         
         Raises
         -------
-        :exc:`PyBlox2.Errors.NilInstance`
+        :exc:`.NilInstance`
             Attempted manipulation on non existing instance
         """
         try:

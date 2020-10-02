@@ -5,6 +5,8 @@ Public API Reference
    :maxdepth: 2
 
    PyBlox2
+   Fetching
+   Private
 
 
 Indices and tables
