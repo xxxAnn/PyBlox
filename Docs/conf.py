@@ -65,7 +65,6 @@ language = 'en'
 # The full version, including alpha/beta/rc tags.
 release = '1.1.0-beta1'
 
-
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
