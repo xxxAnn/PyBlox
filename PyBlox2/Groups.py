@@ -93,16 +93,15 @@ class BloxGroup(BloxType):
             if bucket.get("name") == name:
                 return BloxRank(payload=bucket, group=self)
 
-    # TODO: change username to identifier
-    async def get_member(self, username: str):
+    async def get_member(self, identifier):
         """|coro|
 
         Returns a BloxMember with the given name
 
         Parameters
         -----------
-        username: :class:`str`
-            The name of the member
+        identifier: :class:`str` | :class:`int`
+            The username or userId of the member
 
         Returns
         -------
