@@ -22,14 +22,8 @@ class HttpClient:
     """
     Manages low level interactions with the API
 
-    Attrs:
-        N/A
-
-    Meths:
-        `request` -> Should usually not be used
-        `connect` -> Should usually not be used
-
-    This is a low level object and in most cases shouldn't be interacted with outside the library
+    .. note::
+        This class is a singleton
     """
     __instance = None
 
@@ -50,6 +44,11 @@ class HttpClient:
     async def connect(self, roblosecurity):
         """
         Prepares the cookie and returns the user logged in as
+
+        Returns
+        -------
+        :class:`.BloxUser`
+            The user that this roblosecurity token is pointing to
         """
         self.__set_cookie(".ROBLOSECURITY", roblosecurity, None)
         self.__session = aiohttp.ClientSession()
@@ -87,9 +86,17 @@ class HttpClient:
 
     async def request(self, method, url, data=None, headers=None, retries=0):
         """
-        Requesting to the API, returns a BloxResponse or raises an HttpError
+        Request to the API, returns a BloxResponse or raises an HttpError
 
-        Retries 1 time
+        Returns
+        -------
+        :class:`.BloxResponse`
+            The response from the API
+
+        Raises
+        -------
+        :exc:`.HttpError`
+            The API returned an error code
         """
         if not headers:
             headers = self.__headers
@@ -133,14 +140,16 @@ class HttpClient:
 
 class Url:
     """
-    Aesthetic way of making requests to the API
+    Aesthetic object for making requests to the API
 
-    Attrs:
-        `url`
-
-    Meths:
-        `extend` -> Experimental
-        `get`; `put`; `post`; `patch`; `delete`; -> http request methods
+    Parameters
+    -----------
+    endpoint: :class:`str`
+        The endpoint, either one of the ones specified in the ENDPOINTS constant or the fully written endpoint (ie ``roblox.com``)
+    url: :class:`str`
+        The subdomain to append to the endpoint, with values to replace surrounded by '%' (ie ``/users/%id%``)
+    parameters: :class:`dict`
+        The value with which replace the '%' surrounded identifiers in the *url* parameter (ie ``id=user.id``)
     """
     def __init__(self, endpoint: str, url: str, **params):
         self.__fullurl = endpoint + url
@@ -160,13 +169,16 @@ class Url:
 
     def extend(self, extension_url, **params):
         """
+        .. warning::
+            this is purely experimental
+
         Example
         --------
+
+        .. code-block:: python
+
             url = Url("friends", "/v1/users/%user_id%/friends", user_id=...)
             url.extend("/count")
-
-        .. note::
-            this is purely experimental
         """
         url = self.__fullurl + extension_url
         fullparams = self.__unparsedparams.extend(params)
@@ -175,18 +187,68 @@ class Url:
     # HTTP methods 
 
     async def get(self, data=None, headers=None):
+        """
+        Sends a get request to the url
+
+        Parameters
+        -----------
+        data
+            payload to send with the request
+        headers
+            headers to send with the request
+        """
         return await self.__http.request("GET", self.__url, data, headers)
 
     async def post(self, data=None, headers=None):
+        """
+        Sends a post request to the url
+
+        Parameters
+        -----------
+        data
+            payload to send with the request
+        headers
+            headers to send with the request
+        """
         return await self.__http.request("POST", self.__url, data, headers)
 
     async def put(self, data=None, headers=None):
+        """
+        Sends a put request to the url
+
+        Parameters
+        -----------
+        data
+            payload to send with the request
+        headers
+            headers to send with the request
+        """
         return await self.__http.request("PUT", self.__url, data, headers)
 
     async def delete(self, data=None, headers=None):
+        """
+        Sends a delete request to the url
+
+        Parameters
+        -----------
+        data
+            payload to send with the request
+        headers
+            headers to send with the request
+        """
         return await self.__http.request("DELETE", self.__url, data, headers)
 
     async def patch(self, data=None, headers=None):
+        """
+        Sends a patch request to the url
+
+        Parameters
+        -----------
+        data
+            payload to send with the request
+        headers
+            headers to send with the request
+        """
         return await self.__http.request("PATCH", self.__url, data, headers)
       
 

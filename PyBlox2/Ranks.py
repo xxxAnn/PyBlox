@@ -18,11 +18,11 @@ class BloxRank(BloxType):
         rank of the role (1-255)
     member_count: :class:`int`
         amount of members in the role
-    group: :class:`PyBlox.Groups.BloxGroup`
+    group: :class:`.BloxGroup`
         group this role is attached to
     description: :class:`str`
         description of this role
-    members: list[:class:`PyBlox2.Member.BloxMember`]
+    members: list[:class:`.BloxMember`]
         |fch|
 
         list of members of this role

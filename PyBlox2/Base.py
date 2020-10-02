@@ -99,7 +99,7 @@ class DataContainer():
 
 class Emitter(DataContainer):
     """
-    A DataContainer storing coros in its __data and firing them when necessary with a given playload
+    An emitter storing coros in its __data and firing them when necessary with a given playload
     """
     def __init__(self):
        super().__init__()
@@ -132,6 +132,17 @@ class CommandEmitter(Emitter):
        super().__init__()
 
     async def fire(self, name, ctx, args):
+        """
+        Searches for a coro with the `name` and fires it with the given `ctx` and `args`
+
+        Parameters
+        ----------
+        name: :class:`str`
+            Name identifying the coro
+
+        ctx: :class:`.Context` 
+            Payload to be fired with the event
+        """
         coro = self.find(name)
         if coro:
             await coro(ctx, *args)

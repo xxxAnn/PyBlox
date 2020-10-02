@@ -6,6 +6,7 @@ Public API Reference
 
    PyBlox2
    Fetching
+   Private
 
 
 Indices and tables

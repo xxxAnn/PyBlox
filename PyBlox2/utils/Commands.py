@@ -13,11 +13,10 @@ class Commander:
     """
     Manages looping through the group wall and checking for commands or messages
 
-    Attrs:
-        `prefix`
-    
-    Meths:
-        N/A
+    Attributes
+    -----------
+    prefix: :class:`str`
+        The command prefix
     """
     async def start_listening(self, client, commands, listening_to):
         self.__commands = commands
@@ -83,16 +82,18 @@ class Commander:
 class Context:
     """
     Context object for message on group wall
+    
+    .. note::
+        This objects checks if its `__user_or_member` has a group to determine wether it is a user or not
 
-    Attrs:
-        `user` -> May return None
-        `member` -> May return None
-        `content`
-
-    Meths:
-        N/A
-
-    This objects checks if its `__user_or_member` has a group to determine wether it is a user or not
+    Attributes
+    -----------
+    user: :class:`.BloxUser`
+        The user that sent this message, may be :class:`None`
+    member: :class:`.BloxMember`
+        The member that sent this message, may be :class:`None`
+    content: :class:`str`
+        The content of the message sent
     """
     def __init__(self, user, ctt):
         self.__user_or_member = user

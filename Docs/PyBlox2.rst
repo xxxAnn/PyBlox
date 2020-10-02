@@ -1,5 +1,7 @@
-PyBlox2 main modules public documentation
-===============
+API docs
+==========================================
+
+.. _BloxClient:
 
 Client
 ---------------------
@@ -7,11 +9,15 @@ Client
 .. automodule:: PyBlox2.Client
    :members:
 
-Users
+.. _BloxUser:
+
+User
 -------------------
 
 .. automodule:: PyBlox2.User
    :members:
+
+.. _BloxGroup:
 
 Groups
 ---------------------
@@ -19,11 +25,15 @@ Groups
 .. automodule:: PyBlox2.Groups
    :members:
 
+.. _BloxMember:
+
 Members
 ---------------------
 
 .. automodule:: PyBlox2.Member
    :members:
+
+.. _BloxRank:
 
 Ranks
 --------------------
@@ -31,11 +41,15 @@ Ranks
 .. automodule:: PyBlox2.Ranks
    :members:
 
+.. _BloxResponse:
+
 Response
 -----------------------
 
 .. automodule:: PyBlox2.Response
    :members:
+
+.. _Settings:
 
 Settings
 -----------------------
