@@ -4,24 +4,20 @@ logger = logging.getLogger(__name__)
 
 class Cache:
     """
-    Cache object storing pre-existing information
+    Cache object storing dictionaries in multiple fields
 
-    Attrs:
-        N/A
+    ::
 
-    Meths:
-        add_{name} where name is the name of the pool
-        get_{name} were name is the name of the pool
+        Cache.get_{field_name_here}(key)
+        Cache.set_{field_name_here}(key,value)
 
-        Examples:
-            >> cache.add_user("identifier", user_object)
-            >> cached_user = cache.get_user("identifier")
-            >> assert cached_user == user_object
-
-    This object should only be used locally by the library
+    .. note:: 
+        set creates a field if the field name is not found
     """
     def __getattr__(self, attr):
-
+        """
+        Returns the appropriate __wrap function
+        """
         if attr.startswith("add_"):
             attr = attr.replace("add_", "")
 

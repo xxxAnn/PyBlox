@@ -21,11 +21,11 @@ class BloxGroup(BloxType):
     -----------
     id: :class:`str`
         groupId of the group
-    join_requests: list[:class:`PyBlox2.User.BloxUser`]
+    join_requests: list[:class:`.BloxUser`]
         |fch| 
 
         A list of users requesting to join the group
-    members: list[:class:`PyBlox2.Member.BloxMember`]
+    members: list[:class:`.BloxMember`]
         |fch| 
 
         A list of all the members of the group
@@ -33,7 +33,7 @@ class BloxGroup(BloxType):
         |fch| 
 
         The name of the group
-    settings: :class:`PyBlox2.Settings.BloxSettings`
+    settings: :class:`.DataContainer`
         |fch|
 
         The settings of the group
@@ -81,7 +81,7 @@ class BloxGroup(BloxType):
 
         Returns
         -------
-        :class:`PyBlox2.Ranks.BloxRank`
+        :class:`.BloxRank`
             The BloxRank object if found or :class:`None` otherwise
         """
         hook = await Url("groups", "/v1/groups/%id%/roles", id=self.id).get()
@@ -106,8 +106,8 @@ class BloxGroup(BloxType):
 
         Returns
         -------
-        :class:`PyBlox2.Member.BloxMember`
-            The BloxMember object if found or :class:`None` otherwise
+        :class:`.BloxMember`
+            The BloxMember object or :class:`None` if not found
         """
         user = await self.client.get_user(username)
         return BloxMember(client=self.client, user_id=user.id, username=username, group=self)
