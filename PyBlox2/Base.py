@@ -1,46 +1,7 @@
 from .Errors import AttributeNotFetched
 
 class BloxType():
-    '''
-    Handler for the fetching feature.
-
-    Example: ::
-
-        class MyCustomBloxType(BloxType):
-
-            def __init__(self):
-                self.fetchable = []
-                self.can_fetch("money")
-
-            def fetch_money(self):
-                # Send a request to the API and get the amount of money
-                return 200 # For the sake of this example, let's say it's 200
-
-        # In an async context
-        MyCustomInstance = MyCustomBloxType()
-
-        MyCustomInstance.money
-        >> AttributeNotFetched: Attribute 'money' was accessed before being fetched
-        await MyCustomInstance.fetch("money")
-        >> 200
-        MyCustomInstance.money
-        >> 200
     
-    Attributes
-    ----------
-    client: :class:`BloxClient`
-        The BloxClient this object is attached to.
-    fetchable: :class:`list`
-        List of fetchable attributes.
-
-    .. warning::
-        
-        Will raise `NotImplementedError` the if fetch_{attr}, where {attr} is the name of the attribute, meth doesn't exist.
-
-    .. warning::
-
-        This class shouldn't be used alone, it exists to only to be subclassed.
-    '''
     def __init__(self, client):
         self.client = client
         self.fetchable = []
