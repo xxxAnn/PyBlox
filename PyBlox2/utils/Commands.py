@@ -2,7 +2,7 @@ import logging
 
 import asyncio
 
-from ..Errors import *
+from ..Errors import BadArguments
 from ..utils import Url
 
 
@@ -95,7 +95,7 @@ class Context:
     content: :class:`str`
         The content of the message sent
     """
-    def __init__(self, user, ctt, kwargs):
+    def __init__(self, user, ctt, **kwargs):
         self.__user_or_member = user
         self.content = ctt
         self.__id = kwargs.get("id")
