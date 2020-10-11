@@ -77,7 +77,7 @@ class Commander:
             member = await self.__listening_to.get_member(msg["poster"]["username"])
         except:
             member = await self.__client.get_user(msg["poster"]["username"])
-        return Context(member, msg["body"])
+        return Context(member, msg["body"], id=msg["id"], group_id=self.__listening_to.id)
 
 class Context:
     """
@@ -95,9 +95,11 @@ class Context:
     content: :class:`str`
         The content of the message sent
     """
-    def __init__(self, user, ctt):
+    def __init__(self, user, ctt, kwargs):
         self.__user_or_member = user
         self.content = ctt
+        self.__id = kwargs.get("id")
+        self.__group_id = kwargs.get("group_id")
 
     @property
     def member(self):
@@ -111,6 +113,9 @@ class Context:
             return self.__user_or_member
         return None
 
+    async def delete_message(self):
+        access = Url("groups", "/v1/groups/%groupid%/wall/posts/%postid%", groupid=self.__group_id, postid=self.__id)
+        await access.delete()
 
 
 
