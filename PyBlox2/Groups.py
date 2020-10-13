@@ -108,8 +108,8 @@ class BloxGroup(BloxType):
         :class:`.BloxMember`
             The BloxMember object or :class:`None` if not found
         """
-        user = await self.client.get_user(username)
-        return BloxMember(client=self.client, user_id=user.id, username=username, group=self)
+        user = await self.client.get_user(identifier)
+        return BloxMember(client=self.client, user_id=user.id, username=identifier, group=self)
 
     async def fetch_members(self):
 

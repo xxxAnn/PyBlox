@@ -142,9 +142,9 @@ class BloxUser(BloxType):
             Attempted manipulation on non existing instance
         """
         try:
-            hook = await Url("friends", "/v1/users/%id%/unfollow", id=self.id).post()
-        except UnknownClientError:
-            logger.debug(UnknownClientError.data.text)
+            await Url("friends", "/v1/users/%id%/unfollow", id=self.id).post()
+        except UnknownClientError as e:
+            logger.debug(e.data.text)
             raise NilInstance
     
     async def block(self):
@@ -159,8 +159,8 @@ class BloxUser(BloxType):
         """
         try:
             hook = await Url("default", "/userblock/block?userId=%id%", id=self.id).post()
-        except UnknownClientError:
-            logger.debug(UnknownClientError.data.text)
+        except UnknownClientError as e:
+            logger.debug(e.data.text)
             raise NilInstance
 
     async def unblock(self):
