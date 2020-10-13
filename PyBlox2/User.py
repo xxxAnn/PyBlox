@@ -57,8 +57,8 @@ class BloxUser(BloxType):
             hook = await Url("friends", "/v1/users/%id%/accept-friend-request", id=self.id).post()
         except Forbidden:
             raise UserBlocked
-        except UnknownClientError:
-            logger.debug(UnknownClientError.data.text)
+        except UnknownClientError as e:
+            logger.debug(e.data.text)
             raise NilInstance
 
     async def decline_friend_request(self):
@@ -74,8 +74,8 @@ class BloxUser(BloxType):
         """
         try:
             hook = await Url("friends", "/v1/users/%id%/decline-friend-request", id=self.id).post()
-        except UnknownClientError:
-            logger.debug(UnknownClientError.data.text)
+        except UnknownClientError as e:
+            logger.debug(e.data.text)
             raise NilInstance
 
     async def request_friendship(self):

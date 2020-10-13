@@ -1,6 +1,6 @@
 import json
 
-from .Errors import *
+from .Errors import PyBloxException
 from .Base import BloxType
 from .utils import Url
 
