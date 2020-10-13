@@ -73,7 +73,7 @@ class BloxUser(BloxType):
 
         """
         try:
-            hook = await Url("friends", "/v1/users/%id%/decline-friend-request", id=self.id).post()
+            await Url("friends", "/v1/users/%id%/decline-friend-request", id=self.id).post()
         except UnknownClientError as e:
             logger.debug(e.data.text)
             raise NilInstance
@@ -92,9 +92,9 @@ class BloxUser(BloxType):
             Attempted manipulation on non existing instance
         """
         try: 
-            hook = await Url("default", "/user/request-friendship?recipientUserId=%id%", id=self.id).post()
-        except UnknownClientError:
-            logger.debug(UnknownClientError.data.text)
+            await Url("default", "/user/request-friendship?recipientUserId=%id%", id=self.id).post()
+        except UnknownClientError as e:
+            logger.debug(e.data.text)
             raise NilInstance
 
     async def unfriend(self):
@@ -108,9 +108,9 @@ class BloxUser(BloxType):
             Attempted manipulation on non existing instance
         """
         try:
-            hook = await Url("friends", "/v1/users/%id%/unfriend", id=self.id).post()
-        except UnknownClientError:
-            logger.debug(UnknownClientError.data.text)
+            await Url("friends", "/v1/users/%id%/unfriend", id=self.id).post()
+        except UnknownClientError as e:
+            logger.debug(e.data.text)
             raise NilInstance
 
     async def follow(self):
@@ -124,9 +124,9 @@ class BloxUser(BloxType):
             Attempted manipulation on non existing instance
         """
         try:
-            hook = await Url("friends", "/v1/users/%id%/follow", id=self.id).post()
-        except UnknownClientError:
-            logger.debug(UnknownClientError.data.text)
+            await Url("friends", "/v1/users/%id%/follow", id=self.id).post()
+        except UnknownClientError as e:
+            logger.debug(e.data.text)
             raise NilInstance
         except Forbidden:
             raise UserBlocked
