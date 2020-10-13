@@ -1,7 +1,7 @@
 import json
 import time
 
-from .Errors import *
+from .Errors import AttributeNotFetched, PyBloxException
 from .Base import BloxType
 from .User import BloxUser
 from .Ranks import BloxRank

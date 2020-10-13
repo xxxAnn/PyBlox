@@ -2,7 +2,7 @@ import asyncio
 
 from .User import BloxUser
 from .Groups import BloxGroup
-from .Errors import *
+from .Errors import AttributeNotFetched, PyBloxException
 from .Response import BloxResponse
 from .Base import DataContainer, Emitter, CommandEmitter
 from .utils import HttpClient, Url, Cache, Commander, read_pages
@@ -59,9 +59,6 @@ class BloxClient:
                 raise
             finally:
                 await self.__http.close()
-
-        async def close_session():
-            await self.__http.close()
 
         def kill_loop(f):
             loop.stop()

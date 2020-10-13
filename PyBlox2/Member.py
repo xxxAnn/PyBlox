@@ -1,7 +1,7 @@
 from .User import BloxUser
 from .Ranks import BloxRank
 from .utils import Url
-from .Errors import *
+from .Errors import UnknownClientError, NilInstance
 
 class BloxMember(BloxUser):
     """
